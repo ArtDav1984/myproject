@@ -1,0 +1,181 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+section {
+    display: flex;
+    width: 100%;
+}
+#aside {
+    padding: 20px;
+    width: 28%;
+    height: 760px;
+    overflow-y: auto;
+    background-color: #f4f5fd;
+    border-right: 3px solid #9ca1aa;
+}
+ul {
+    list-style-type: none;
+}
+#aside h1 {
+    color: #f0ad4e;
+}
+#aside h1 span {
+    color: #86c3ff;
+}
+.database-list {
+    margin-left: -8px;
+}
+#create-db {
+    cursor: pointer;
+}
+#new-db {
+	margin-top: 20px;
+    margin-left: 50px;
+}
+#db-name, #charsets, #db-submit {
+    height: 25px;
+    outline: none;
+}
+#charsets, #columns-title {
+    width: 250px;
+	margin-left: 20px;
+}
+#db-name {
+    width: 220px;
+}
+#db-submit, #table-submit {
+    width: 60px;
+    margin-left: 20px;
+    border-radius: 20px;
+    border: 1px solid #848696;
+    cursor: pointer;
+}
+#db-submit:hover, #table-submit:hover {
+    background-color: #f4f5fd;
+}
+.tables-list {
+    display: none;
+}
+.fa-minus-square, .fa-plus-square, .horizontal-line, .fa-database {
+    color: #848696;
+}
+.fa-plus-square, .fa-minus-square {
+    background-color: white;
+}
+.db-name:hover {
+    cursor: pointer;
+}
+.fa-minus-square {
+    display: none;
+}
+.tables-list {
+    margin-left: -1px;
+}
+.table-name, .new-table {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #848696;
+    cursor: pointer;
+}
+.vertical-line {
+    border-left: 1px solid #848696;
+    margin-left: 10px;
+    padding-bottom: 5px;
+}
+.hide-line {
+    border-left: 1px solid #848696;
+    margin-left: 25px;
+}
+.databases {
+    margin-top: 20px;
+}
+.vertical-line:last-child {
+    border-left: none;
+}
+table {
+    border-collapse: collapse !important;
+    margin: 20px auto 30px !important;
+}
+td, th {
+    text-align: left !important;
+    padding: 8px !important;
+}
+th {
+    border-right: 1px solid #fff;
+    border-left: 1px solid #fff;
+}
+tr:nth-child(odd) {
+    background-color: #dddddd !important;
+}
+#content {
+    background-color: #f8fafc;
+    width: 72%;
+}
+#new-table {
+    width: 95%;
+    margin: 20px auto 0;
+}
+fieldset {
+    height: 130px !important;
+    padding-top: 25px;
+    border-radius: 7px;
+    padding-left: 20px;
+    border: 1px solid #a8b0c2;
+    background-color: #e4e7ec;
+}
+legend {
+    border: 1px solid #a8b0c2;
+    padding: 5px;
+    border-radius: 2px;
+    background-color: #fff;
+}
+#tableName, #update-name {
+    height: 25px;
+    width: 250px;
+    outline: none;
+    padding-left: 5px;
+}
+#numberColumn, #update-number {
+    height: 25px;
+    width: 40px;
+    outline: none;
+    padding-left: 5px;
+}
+#button-block {
+    background-color: #b0b7c8;
+    width: 100%;
+    height: 100%;
+}
+#table-submit {
+    margin-left: 90%;
+    background-color: #f6f7f8;
+    height: 25px;
+}
+#add-submit {
+    height: 25px;
+    width: 60px;
+    margin-left: 20px;
+    border-radius: 20px;
+    border: 1px solid #848696;
+    cursor: pointer;
+}
+.table {
+    width: 100%;
+    margin: 0;
+}
+.table th {
+    border-right: none;
+    border-left: none;
+}
+#table {
+    width: 98%;
+    margin: 20px auto 0 !important;
+}
+.line {
+    width: 100%;
+    margin-top: 20px;
+    background-color: #b0b7c8;
+    height: 20px;
+}
