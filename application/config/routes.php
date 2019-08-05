@@ -55,5 +55,6 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['databases/chars'] = 'databases/chars';
 $route['databases/create'] = 'databases/create';
+$route['databases/update'] = 'databases/update';
 $route['tables/column'] = 'tables/column';
 $route['tables'] = 'tables';

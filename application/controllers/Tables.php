@@ -25,10 +25,10 @@
 		
 		public function column()
 		{
-			if ($this->input->is_ajax_request()) {
+			if ($this->input->is_ajax_request()){
 				$table_name = $this->input->get_request_header('table');
-				$db_name = $this->input->get_request_header('databaseName');
-
+				$db_name    = $this->input->get_request_header('databaseName');
+				
 				if ($table_name && $db_name) {
 					$columns = $this->TableName->getTablesColumn($table_name, $db_name);
 					echo json_encode(['data' => $columns, 'type' => 'success']);
