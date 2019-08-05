@@ -36,10 +36,9 @@
 		public function updateDatabase($new_db_name, $current_db_name)
 		{
 			$tables = $this->TableName->getTablesName($current_db_name);
-			$new_db = $this->createDatabase($new_db_name, '');
-			if ($new_db) {
+			if ($this->dbforge->create_database($new_db_name)) {
 				foreach ($tables as $table) {
-					$query = $this->db->query("RENAME TABLE $current_db_name.$table TO $new_db.$table");
+					$query = $this->db->query("RENAME TABLE $current_db_name.$table TO $new_db_name.$table");
 				}
 				if ($query) {
 					if ($this->dbforge->drop_database($current_db_name)) {
