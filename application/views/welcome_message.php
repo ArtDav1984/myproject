@@ -70,7 +70,7 @@
         </div>
         <div id="modal-footer">
             <form method="post" id="update-db-form">
-                <button type="submit" id="confirm-db-update">OK</button>
+                <button type="submit" class="confirm-db">OK</button>
                 <button type="button"  class="cancel-db-update">Cancel</button>
             </form>
         </div>

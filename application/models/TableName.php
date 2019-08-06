@@ -2,6 +2,12 @@
 	
 	class TableName extends CI_Model
 	{
+		public function __construct()
+		{
+			parent::__construct();
+			$this->load->dbforge();
+		}
+		
 		public function getTablesName($db_name)
 		{
 			$tables = $this->db->query("SHOW TABLES FROM $db_name")->result_array();

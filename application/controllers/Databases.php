@@ -7,8 +7,6 @@
 		public function __construct()
 		{
 			parent::__construct();
-			
-			//load the model
 			$this->load->model('DbName');
 		}
 		
@@ -33,7 +31,6 @@
 		
 		public function create()
 		{
-			
 			if ($this->input->is_ajax_request()) {
 				$db_name   = $this->input->post('name');
 				$char_name = $this->input->post('charsets');
@@ -58,6 +55,21 @@
 					echo json_encode(['data' => $database, 'type' => 'success']);
 				}  else {
 					echo json_encode(['data' => 'null', 'type' => 'fail']);
+				}
+			}
+		}
+		
+		public function delete()
+		{
+			if ($this->input->is_ajax_request()) {
+				$db_name = $this->input->post('dbName');
+				
+				if(isset($db_name)) {
+					if ($this->DbName->deleteDatabase($db_name)){
+						echo json_encode(['type' => 'success']);
+					}
+				} else {
+					echo json_encode(['data' => null, 'type' => 'fail']);
 				}
 			}
 		}

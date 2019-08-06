@@ -5,8 +5,6 @@
 		public function __construct()
 		{
 			parent::__construct();
-			
-			//load the model
 			$this->load->model('TableName');
 		}
 		

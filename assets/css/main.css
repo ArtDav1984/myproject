@@ -180,13 +180,16 @@ legend {
     background-color: #b0b7c8;
     height: 20px;
 }
-.drop-db-desc, .fa-calendar-times {
+#delete-db-submit, .fa-calendar-times {
     color: red;
 }
-.drop-db-desc {
-    text-decoration: none;
+#delete-db-submit {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
 }
-.drop-db-desc:hover {
+#delete-db-submit:hover {
     text-decoration: underline;
     color: #fff;
     background-color: red;
@@ -236,7 +239,7 @@ legend {
 #modal-footer {
     padding: 10px 15px 15px;
 }
-#confirm-db-update, .cancel-db-update {
+.confirm-db, .cancel-db-update {
     width: 40px;
     height: 30px;
     margin-left: 130px;
@@ -244,7 +247,7 @@ legend {
     border: 1px solid #848696;
     cursor: pointer;
 }
-#confirm-db-update:hover, .cancel-db-update:hover {
+.confirm-db-update:hover, .cancel-db-update:hover {
     background-color: #f4f5fd;
 }
 .cancel-db-update {

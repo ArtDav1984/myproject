@@ -9,6 +9,7 @@
 			$this->load->dbforge();
 			$this->load->model('TableName');
 		}
+		
 		public  function getDatabasesNames()
 		{
 			$databases = $this->db->query("SHOW DATABASES")->result_array();
@@ -38,17 +39,24 @@
 			$tables = $this->TableName->getTablesName($current_db_name);
 			if ($this->dbforge->create_database($new_db_name)) {
 				foreach ($tables as $table) {
-					$query = $this->db->query("RENAME TABLE $current_db_name.$table TO $new_db_name.$table");
+					$this->db->query("RENAME TABLE $current_db_name.$table TO $new_db_name.$table");
 				}
-				if ($query) {
-					if ($this->dbforge->drop_database($current_db_name)) {
-						return $new_db_name;
-					}
+				if ($this->dbforge->drop_database($current_db_name)) {
+					return $new_db_name;
 				}
 			}
 			return false;
 		}
+		
+		public function deleteDatabase($db_name)
+		{
+			if ($this->dbforge->drop_database($db_name)) {
+				return true;
+			}
+			return false;
+		}
 	}
+	
 	
 	
 	

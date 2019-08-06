@@ -74,34 +74,15 @@ $("#content").on('click', '#db-submit',function (event) {
     }
 });
 
-$("#content").on('click','#table-submit',function (event) {
-    event.preventDefault();
-    var tableName = $("#tableName").val();
-    var numberColumn = $("#numberColumn").val();
-
-    if (tableName !== '' && numberColumn !== '') {
-        var table = '<div id="table">' +
-            '<form method="post">' +
-            `Table name: <input type="text" id="update-name" value="${tableName}">` + " " + " " +
-            'Add: <input type="number" id="update-number" value="1">' + " " + " " +
-            '<button type="submit" id="add-submit">Submit</button>' +
-            '</form>' +
-            '<div class="line"></div>' +
-            '<form method="post">' +
-            '<table class="table">' +
-            '<tr> <th>Name</th> <th>Type</th> <th>Length</th> <th>Default</th> <th>Index</th> </tr>' +
-            '</table>' +
-            '</form></div>';
-        $("#content").html(table);
-    }
-});
-
+var database = '';
+var currentDbName = '';
 $(".databases").on('click', '.database', function () {
     var parent = $(this).parent("li");
-    var dbName = parent.data('base');
+        currentDbName = parent.attr("data-base");
+        database = $(this);
     var dbSettings = document.createElement('DIV');
 
-    var createTable = `<div id="new-table" data-base="${dbName}">` +
+    var createTable = `<div id="new-table">` +
         '<form method="post">' +
         '<fieldset>' +
         '<legend><i class="far fa-list-alt"></i> Create table</legend>' +
@@ -113,7 +94,7 @@ $(".databases").on('click', '.database', function () {
         '</form>' +
         '</div>';
 
-    var updateDb = `<div id="update-db" data-base="${dbName}">` +
+    var updateDb = `<div id="update-db">` +
         '<form method="post">' +
         '<fieldset>' +
         '<legend><i class="fas fa-pencil-alt"></i> Rename database to</legend>' +
@@ -124,11 +105,11 @@ $(".databases").on('click', '.database', function () {
         '</form>' +
         '</div>';
 
-    var deleteDb = `<div id="del-db" data-base="${dbName}">` +
+    var deleteDb = `<div id="del-db">` +
         '<form method="post">' +
         '<fieldset>' +
         '<legend><i class="far fa-calendar-times"></i> Remove database</legend>' +
-        '<a href="#" class="drop-db-desc">Drop the database (DROP)</a>' +
+        '<button id="delete-db-submit">Drop the database (DROP)</button>' +
         '</fieldset>' +
         '</form>' +
         '</div>';
@@ -137,25 +118,21 @@ $(".databases").on('click', '.database', function () {
     $("#content").html(dbSettings);
 });
 
+var newDbName = '';
 $("#content").on('click','#update-db-submit',function (event){
     event.preventDefault();
-    var parent = $(this).parent('fieldset').parent('form').parent('div');
-    var currentDbName = parent.data('base');
-    var newDbName = $("#dbName").val();
+    newDbName = $("#dbName").val();
 
     if (newDbName !== '') {
         $("#update-db-modal").show();
         $("#update-db-modal > #modal-body > p").html(`CREATE DATABASE ${newDbName} / DROP DATABASE ${currentDbName}`);
-        var form = document.getElementById("update-db-form");
-        setAttributes(form, {"data-new": newDbName, "data-current": currentDbName});
+        var button = $(".confirm-db");
+        $(button).attr("id", "confirm-db-update");
     }
 });
 
-$("#confirm-db-update").click(function (event) {
+$("#update-db-modal").on('click', '#confirm-db-update', function (event) {
     event.preventDefault();
-    var form = $("#update-db-form");
-    var newDbName = form.attr('data-new');
-    var currentDbName = form.attr('data-current');
 
     $.ajax({
         url: 'databases/update',
@@ -167,7 +144,64 @@ $("#confirm-db-update").click(function (event) {
             currentDbName: currentDbName
         }
     }).done(response => {
-        console.log(response.data);
+        if (response.type === 'success') {
+            database.html(` ${response.data}`);
+            var li = database.parent('li');
+            li.removeAttr("data-base");
+            li.attr("data-base", response.data);
+            $("#update-db-modal").hide();
+            var createTable = `<div id="new-table" data-base="${response.data}">` +
+                '<form method="post">' +
+                '<fieldset>' +
+                '<legend><i class="far fa-list-alt"></i> Create table</legend>' +
+                '<span>Name:</span> <input type="text" name="tableName" id="tableName"/>' +
+                '<span id="columns-title">Number of columns:</span> <input type="number" name="numberColumn" id="numberColumn" value="4"/>' +
+                '<br /><br />' +
+                '<button type="submit" id="table-submit">Go</button>' +
+                '</fieldset>' +
+                '</form>' +
+                '</div>';
+            $("#content").html(createTable);
+        }
+    }).fail(error => {
+        console.log(error)
+    })
+});
+
+$("#content").on('click','#delete-db-submit',function (event){
+    event.preventDefault();
+
+    $("#update-db-modal").show();
+    $("#update-db-modal > #modal-body > p").html(`You are about to DESTROY a complete database! Do you really want to execute "DROP DATABASE ${currentDbName}"?`);
+    var button = $(".confirm-db");
+    $(button).attr("id", "confirm-db-delete");
+});
+
+$("#update-db-modal").on('click', '#confirm-db-delete', function (event) {
+    event.preventDefault();
+
+    $.ajax({
+        url: 'databases/delete',
+        type: 'POST',
+        async: true,
+        dataType: "JSON",
+        data: {
+            dbName: currentDbName
+        }
+    }).done(response => {
+        if (response.type === 'success') {
+            var parent = database.parent('li').parent('div');
+            $(parent).remove();
+            $("#update-db-modal").hide();
+            var newDb = '<div id="new-db">' +
+                '<form method="post">' +
+                '<label for="db-name">' +
+                '<i class="fas fa-database"></i> Create Database </label> <br /><br />' +
+                '<input type="text" name="name" id="db-name" placeholder="Database name" required/>' +
+                '<select id="charsets" name="charsets" aria-expanded="false"></select>' +
+                '<button type="submit" id="db-submit">Create</button> </form> </div>';
+            $("#content").html(newDb);
+        }
     }).fail(error => {
         console.log(error)
     })
@@ -183,7 +217,7 @@ $(".databases").on('click', '.db-name', function () {
     var minus = parent.find('.fa-minus-square');
     var ul = parent.find('.tables-list');
     var expended = parent.attr('aria-expanded');
-    var databaseName = parent.data('base');
+    var databaseName = parent.attr("data-base");
 
     ul.slideToggle();
     plus.toggle();
@@ -223,9 +257,9 @@ $(".databases").on('click', '.db-name', function () {
 
 $(".tables-list").on('click', '.table-name', function () {
     var expended = $(this).attr('aria-expanded');
-    var tableName = $(this).data('table');
+    var tableName = $(this).attr("data-table");
     var parent = $(this).parent('ul').parent('div').parent('li');
-    var databaseName = parent.data('base');
+    var databaseName = parent.attr("data-base");
 
     $.ajax({
         url     : 'tables/column',
@@ -256,7 +290,7 @@ $(".tables-list").on('click', '.table-name', function () {
 
 $(".tables-list").on('click', '.new-table', function () {
     var parent = $(this).parent('ul').parent('div').parent('li');
-    var dbName = parent.data('base');
+    var dbName = parent.attr("data-base");
     var newTable = `<div id="new-table" data-base="${dbName}">` +
         '<form method="post">' +
         '<fieldset>' +
@@ -270,6 +304,26 @@ $(".tables-list").on('click', '.new-table', function () {
         '</form>' +
         '</div>';
     $("#content").html(newTable);
+});
+
+$("#content").on('click','#table-submit',function (event) {
+    event.preventDefault();
+    var tableName = $("#tableName").val();
+    var numberColumn = $("#numberColumn").val();
+
+    if (tableName !== '' && numberColumn !== '') {
+        var table = '<div id="table">' +
+            '<form method="post">' +
+            `Table name: <input type="text" id="update-name" value="${tableName}">` + " " + " " +
+            'Add: <input type="number" id="update-number" value="1">' + " " + " " +
+            '<button type="submit" id="add-submit">Submit</button>' +
+            '<div class="line"></div>' +
+            '<table class="table">' +
+            '<tr> <th>Name</th> <th>Type</th> <th>Length</th> <th>Default</th> <th>Index</th> </tr>' +
+            '</table>' +
+            '</form></div>';
+        $("#content").html(table);
+    }
 });
 
 function setAttributes(el, attrs) {
