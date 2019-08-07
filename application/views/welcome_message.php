@@ -6,7 +6,7 @@
     <title>Title</title>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <link rel="stylesheet" href="<?php echo base_url() ?>assets/css/main.css " type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo base_url() ?>assets/css/main.css" type="text/css" media="screen" />
 </head>
 <body>
 
@@ -27,6 +27,7 @@
 
                 <div class="vertical-line">
                     <li class="database-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
+                        <image class="load-aside" src="<?php echo base_url() ?>assets/img/load.gif" />
                         <i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i><span class="horizontal-line">-</span><i class="fas fa-database"></i>
                         <span class="db-name database"><?= $item['Database']; ?></span>
 
@@ -42,12 +43,12 @@
     </div>
 
     <div id="content">
-        <div id="new-db">
+        <div id="new-db" class="article">
             <form method="post">
                 <label for="db-name">
                     <i class="fas fa-database"></i> Create Database
                 </label> <br /><br />
-                <input type="text" name="name" id="db-name" placeholder="Database name" required/>
+                <input type="text" name="name" id="db-name" placeholder="Database name" />
                 <select id="charsets" name="charsets" aria-expanded="false">
 					<?php foreach ($chars as $char) : ?>
                         <option value="<?= $char ?>" class="charset">
@@ -58,6 +59,61 @@
                 <button type="submit" id="db-submit">Create</button>
             </form>
         </div>
+
+		<div id="new-table" class="article">
+			<form method="post">
+				<fieldset>
+					<legend><i class="far fa-list-alt"></i> Create table</legend>
+					<span>Name:</span> <input type="text" name="tableName" id="tableName"/>
+					<span id="columns-title">Number of columns:</span>
+					<input type="number" name="numberColumn" id="numberColumn" value="4"/>
+					<br /><br />
+					<button type="submit" id="table-submit">Go</button>
+				</fieldset>
+			</form>
+		</div>
+
+		<div id="update-db" class="article">
+			<form method="post">
+				<fieldset>
+					<legend><i class="fas fa-pencil-alt"></i> Rename database to</legend>
+					<input type="text" name="tableName" id="dbName"/>
+					<br /><br />
+					<button type="submit" id="update-db-submit">Go</button>
+				</fieldset>
+			</form>
+		</div>
+
+		<div id="del-db" class="article">
+			<form method="post">
+				<fieldset>
+					<legend><i class="far fa-calendar-times"></i> Remove database</legend>
+					<button id="delete-db-submit">Drop the database (DROP)</button>
+				</fieldset>
+			</form>
+		</div>
+
+		<div id="table-columns" class="article">
+
+		</div>
+
+		<div id="table" class="article">
+			<form method="post">
+				Table name: <input type="text" id="update-name">
+				Add: <input type="number" id="update-number" value="1">
+				<button type="submit" id="add-submit">Submit</button>
+				<div class="line"></div>
+				<table class="table">
+					<tr>
+						<th>Name</th>
+						<th>Type</th>
+						<th>Length/Values</th>
+						<th>Default</th>
+						<th>Index</th>
+					</tr>
+				</table>
+			</form>
+		</div>
     </div>
 
     <div id="update-db-modal">
@@ -75,6 +131,8 @@
             </form>
         </div>
     </div>
+    
+    <image class="load-content" src="<?php echo base_url() ?>assets/img/load_2.gif" />
 
 </section>
 

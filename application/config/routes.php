@@ -53,7 +53,6 @@ $route['default_controller'] = 'databases';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['databases/chars'] = 'databases/chars';
 $route['databases/create'] = 'databases/create';
 $route['databases/update'] = 'databases/update';
 $route['databases/delete'] = 'databases/delete';

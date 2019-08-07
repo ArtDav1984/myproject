@@ -1,40 +1,23 @@
+var database = '';
+var dbName = '';
+var newDbName = '';
+var tableName = '';
+var article = $(".article");
+
 $("#create-db").click(function () {
-    $.ajax({
-        url     : 'databases/chars',
-        type    : 'GET',
-        async   : true,
-        headers : {
-            getCharsList: true
-        },
-        dataType: "JSON",
-    }).done(response => {
-        if (response.type === 'success'){
-            var newDb = '<div id="new-db">' +
-                '<form method="post">' +
-                '<label for="db-name">' +
-                '<i class="fas fa-database"></i> Create Database </label> <br /><br />' +
-                '<input type="text" name="name" id="db-name" placeholder="Database name" required/>' +
-                '<select id="charsets" name="charsets" aria-expanded="false"></select>' +
-                '<button type="submit" id="db-submit">Create</button> </form> </div>';
-            $("#content").html(newDb);
-            response.data.forEach(function (charset) {
-                var option = document.createElement('OPTION');
-                option.innerHTML = charset;
-                setAttributes(option, {"class": "charset", "value": charset});
-                $("#charsets").append(option);
-            })
-        }
-    }).fail(error => {
-        console.log(error)
-    })
+	article.hide();
+	$("#new-db").show();
+	$("#db-name").val('');
 });
 
 $("#content").on('click', '#db-submit',function (event) {
     event.preventDefault();
-    var dbName = $("#db-name").val();
     var charName = $(".charset").val();
+	var loadContent = $(".load-content");
+	dbName = $("#db-name").val();
 
     if (dbName !== '') {
+        loadContent.show();
         $.ajax({
             url     : 'databases/create',
             type    : 'POST',
@@ -46,27 +29,21 @@ $("#content").on('click', '#db-submit',function (event) {
             }
         }).done(response => {
             if (response.type === 'success') {
-                var newTable = `<div id="new-table" data-base="${response.data}">` +
-                    '<form method="post">' +
-                    '<fieldset>' +
-                    '<legend><i class="far fa-list-alt"></i> Create table</legend>' +
-                    '<span>Name:</span> <input type="text" name="tableName" id="tableName"/>' +
-                    '<span id="columns-title">Number of columns:</span> ' +
-                    '<input type="number" name="numberColumn" id="numberColumn" value="4"/>' +
-                    '<br /><br />' +
-                    '<button type="submit" id="table-submit">Go</button>' +
-                    '</fieldset>' +
-                    '</form>' +
-                    '</div>';
-                $("#content").html(newTable);
+                setTimeout(load, 300);
+                function load() {
+                    loadContent.hide();
+                    article.hide();
+                    $("#new-table").show();
 
-                var newDbLine = '<div class="vertical-line">' +
-                    `<li class="database-list" aria-expanded="false" data-base="${response.data}">` +
-                    '<i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i>' +
-                    `<span class="horizontal-line">-</span><i class="fas fa-database"></i>` +
-                    `<span class="db-name database">&nbsp;${response.data}</span>` +
-                    '<div class="hide-line"> <ul class="tables-list"> </ul> </div> </li> </div>';
-                $(".databases").append(newDbLine);
+                    var newDbLine = '<div class="vertical-line">' +
+                        `<li class="database-list" aria-expanded="false" data-base="${response.data}">` +
+                        '<image class="load-aside" src="assets/img/load.gif" />' +
+                        '<i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i>' +
+                        `<span class="horizontal-line">-</span><i class="fas fa-database"></i>` +
+                        `<span class="db-name database">&nbsp;${response.data}</span>` +
+                        '<div class="hide-line"> <ul class="tables-list"> </ul> </div> </li> </div>';
+                    $(".databases").append(newDbLine);
+                }
             }
         }).fail(error => {
             console.log(error);
@@ -74,58 +51,23 @@ $("#content").on('click', '#db-submit',function (event) {
     }
 });
 
-var database = '';
-var currentDbName = '';
 $(".databases").on('click', '.database', function () {
     var parent = $(this).parent("li");
-        currentDbName = parent.attr("data-base");
+        dbName = parent.attr("data-base");
         database = $(this);
-    var dbSettings = document.createElement('DIV');
-
-    var createTable = `<div id="new-table">` +
-        '<form method="post">' +
-        '<fieldset>' +
-        '<legend><i class="far fa-list-alt"></i> Create table</legend>' +
-        '<span>Name:</span> <input type="text" name="tableName" id="tableName"/>' +
-        '<span id="columns-title">Number of columns:</span> <input type="number" name="numberColumn" id="numberColumn" value="4"/>' +
-        '<br /><br />' +
-        '<button type="submit" id="table-submit">Go</button>' +
-        '</fieldset>' +
-        '</form>' +
-        '</div>';
-
-    var updateDb = `<div id="update-db">` +
-        '<form method="post">' +
-        '<fieldset>' +
-        '<legend><i class="fas fa-pencil-alt"></i> Rename database to</legend>' +
-        '<input type="text" name="tableName" id="dbName"/>' +
-        '<br /><br />' +
-        '<button type="submit" id="update-db-submit">Go</button>' +
-        '</fieldset>' +
-        '</form>' +
-        '</div>';
-
-    var deleteDb = `<div id="del-db">` +
-        '<form method="post">' +
-        '<fieldset>' +
-        '<legend><i class="far fa-calendar-times"></i> Remove database</legend>' +
-        '<button id="delete-db-submit">Drop the database (DROP)</button>' +
-        '</fieldset>' +
-        '</form>' +
-        '</div>';
-
-    dbSettings.innerHTML = createTable + updateDb + deleteDb;
-    $("#content").html(dbSettings);
+        article.hide();
+        $("#new-table").show();
+        $("#update-db").show();
+        $("#del-db").show();
 });
 
-var newDbName = '';
 $("#content").on('click','#update-db-submit',function (event){
     event.preventDefault();
     newDbName = $("#dbName").val();
 
     if (newDbName !== '') {
         $("#update-db-modal").show();
-        $("#update-db-modal > #modal-body > p").html(`CREATE DATABASE ${newDbName} / DROP DATABASE ${currentDbName}`);
+        $("#update-db-modal > #modal-body > p").html(`CREATE DATABASE ${newDbName} / DROP DATABASE ${dbName}`);
         var button = $(".confirm-db");
         $(button).attr("id", "confirm-db-update");
     }
@@ -133,6 +75,8 @@ $("#content").on('click','#update-db-submit',function (event){
 
 $("#update-db-modal").on('click', '#confirm-db-update', function (event) {
     event.preventDefault();
+    var loadContent = $(".load-content");
+    loadContent.show();
 
     $.ajax({
         url: 'databases/update',
@@ -141,27 +85,21 @@ $("#update-db-modal").on('click', '#confirm-db-update', function (event) {
         dataType: "JSON",
         data: {
             newDbName: newDbName,
-            currentDbName: currentDbName
+            dbName: dbName
         }
     }).done(response => {
         if (response.type === 'success') {
-            database.html(` ${response.data}`);
-            var li = database.parent('li');
-            li.removeAttr("data-base");
-            li.attr("data-base", response.data);
             $("#update-db-modal").hide();
-            var createTable = `<div id="new-table" data-base="${response.data}">` +
-                '<form method="post">' +
-                '<fieldset>' +
-                '<legend><i class="far fa-list-alt"></i> Create table</legend>' +
-                '<span>Name:</span> <input type="text" name="tableName" id="tableName"/>' +
-                '<span id="columns-title">Number of columns:</span> <input type="number" name="numberColumn" id="numberColumn" value="4"/>' +
-                '<br /><br />' +
-                '<button type="submit" id="table-submit">Go</button>' +
-                '</fieldset>' +
-                '</form>' +
-                '</div>';
-            $("#content").html(createTable);
+            setTimeout(load, 300);
+            function load() {
+                loadContent.hide();
+                database.html(` ${response.data}`);
+                var li = database.parent('li');
+                li.removeAttr("data-base");
+                li.attr("data-base", response.data);
+                article.hide();
+                $("#new-table").show();
+            }
         }
     }).fail(error => {
         console.log(error)
@@ -172,13 +110,15 @@ $("#content").on('click','#delete-db-submit',function (event){
     event.preventDefault();
 
     $("#update-db-modal").show();
-    $("#update-db-modal > #modal-body > p").html(`You are about to DESTROY a complete database! Do you really want to execute "DROP DATABASE ${currentDbName}"?`);
+    $("#update-db-modal > #modal-body > p").html(`You are about to DESTROY a complete database! Do you really want to execute "DROP DATABASE ${dbName}"?`);
     var button = $(".confirm-db");
     $(button).attr("id", "confirm-db-delete");
 });
 
 $("#update-db-modal").on('click', '#confirm-db-delete', function (event) {
     event.preventDefault();
+    var loadContent = $(".load-content");
+    loadContent.show();
 
     $.ajax({
         url: 'databases/delete',
@@ -186,21 +126,20 @@ $("#update-db-modal").on('click', '#confirm-db-delete', function (event) {
         async: true,
         dataType: "JSON",
         data: {
-            dbName: currentDbName
+            dbName: dbName
         }
     }).done(response => {
         if (response.type === 'success') {
-            var parent = database.parent('li').parent('div');
-            $(parent).remove();
             $("#update-db-modal").hide();
-            var newDb = '<div id="new-db">' +
-                '<form method="post">' +
-                '<label for="db-name">' +
-                '<i class="fas fa-database"></i> Create Database </label> <br /><br />' +
-                '<input type="text" name="name" id="db-name" placeholder="Database name" required/>' +
-                '<select id="charsets" name="charsets" aria-expanded="false"></select>' +
-                '<button type="submit" id="db-submit">Create</button> </form> </div>';
-            $("#content").html(newDb);
+            setTimeout(load, 300);
+            function load() {
+                loadContent.hide();
+                var parent = database.parent('li').parent('div');
+                $(parent).remove();
+                article.hide();
+                $("#new-db").show();
+				$("#db-name").val('');
+            }
         }
     }).fail(error => {
         console.log(error)
@@ -218,12 +157,14 @@ $(".databases").on('click', '.db-name', function () {
     var ul = parent.find('.tables-list');
     var expended = parent.attr('aria-expanded');
     var databaseName = parent.attr("data-base");
+    var loadAside = parent.find('.load-aside');
 
     ul.slideToggle();
     plus.toggle();
     minus.toggle();
 
     if (expended === 'false') {
+        loadAside.show();
         $.ajax({
             url     : 'tables',
             type    : 'GET',
@@ -234,18 +175,22 @@ $(".databases").on('click', '.db-name', function () {
             }
         }).done(response => {
             if (response.type === 'success') {
-                var newTable = document.createElement("LI");
-                var newIcon  = '<i class="far fa-list-alt"></i>';
-                newTable.innerHTML = "‐‐‐" + newIcon + " " + "New";
-                setAttributes(newTable, {"class": "new-table"});
-                ul.append(newTable);
-                response.data.forEach(function (table) {
-                    var li   = document.createElement('LI');
-                    var icon = '<i class="far fa-list-alt"></i>';
-                    setAttributes(li, {"class": "table-name", "data-table": table, "aria-expanded": "false"});
-                    li.innerHTML = "‐‐‐" + icon + " " + table;
-                    ul.append(li);
-                });
+                setTimeout(load, 300);
+                function load() {
+                    loadAside.hide();
+                    var newTable       = document.createElement("LI");
+                    var newIcon        = '<i class="far fa-list-alt"></i>';
+                    newTable.innerHTML = "‐‐‐" + newIcon + " " + "New";
+                    setAttributes(newTable, {"class": "new-table"});
+                    ul.append(newTable);
+                    response.data.forEach(function (table) {
+                        var li   = document.createElement('LI');
+                        var icon = '<i class="far fa-list-alt"></i>';
+                        setAttributes(li, {"class": "table-name", "data-table": table, "aria-expanded": "false"});
+                        li.innerHTML = "‐‐‐" + icon + " " + table;
+                        ul.append(li);
+                    });
+                }
             }
         }).fail(error => {
             console.log(error);
@@ -259,7 +204,9 @@ $(".tables-list").on('click', '.table-name', function () {
     var expended = $(this).attr('aria-expanded');
     var tableName = $(this).attr("data-table");
     var parent = $(this).parent('ul').parent('div').parent('li');
-    var databaseName = parent.attr("data-base");
+    dbName = parent.attr("data-base");
+    var loadContent = $(".load-content");
+    loadContent.show();
 
     $.ajax({
         url     : 'tables/column',
@@ -268,20 +215,27 @@ $(".tables-list").on('click', '.table-name', function () {
         dataType: "JSON",
         headers    : {
             table: tableName,
-            databaseName: databaseName
+            dbName: dbName
         }
     }).done(response => {
         if (response.type === 'success') {
-            var table       = document.createElement('TABLE');
-            var tr          = document.createElement('TR');
-            table.append(tr);
-            $("#content").html(table);
-            $(window).scrollTop(0);
-            response.data.forEach(function (column) {
-                var th       = document.createElement('TH');
-                th.innerHTML = column;
-                tr.append(th)
-            });
+            setTimeout(load, 300);
+            function load() {
+                loadContent.hide();
+                var table = document.createElement('TABLE');
+                var tr    = document.createElement('TR');
+                table.append(tr);
+                $(window).scrollTop(0);
+                response.data.forEach(function (column) {
+                    var th       = document.createElement('TH');
+                    th.innerHTML = column;
+                    tr.append(th)
+                });
+                var tableColumn = $("#table-columns");
+				article.hide();
+				$(tableColumn).html(table);
+				$(tableColumn).show();
+            }
         }
     }).fail(error => {
         console.log(error);
@@ -290,39 +244,20 @@ $(".tables-list").on('click', '.table-name', function () {
 
 $(".tables-list").on('click', '.new-table', function () {
     var parent = $(this).parent('ul').parent('div').parent('li');
-    var dbName = parent.attr("data-base");
-    var newTable = `<div id="new-table" data-base="${dbName}">` +
-        '<form method="post">' +
-        '<fieldset>' +
-        '<legend><i class="far fa-list-alt"></i> Create table</legend>' +
-        '<span>Name:</span> <input type="text" name="tableName" id="tableName"/>' +
-        '<span id="columns-title">Number of columns:</span> ' +
-        '<input type="number" name="numberColumn" id="numberColumn" value="4"/>' +
-        '<br /><br />' +
-        '<button type="submit" id="table-submit">Go</button>' +
-        '</fieldset>' +
-        '</form>' +
-        '</div>';
-    $("#content").html(newTable);
+    dbName = parent.attr("data-base");
+    article.hide();
+    $("#new-table").show();
 });
 
 $("#content").on('click','#table-submit',function (event) {
     event.preventDefault();
-    var tableName = $("#tableName").val();
+    tableName = $("#tableName").val();
     var numberColumn = $("#numberColumn").val();
 
     if (tableName !== '' && numberColumn !== '') {
-        var table = '<div id="table">' +
-            '<form method="post">' +
-            `Table name: <input type="text" id="update-name" value="${tableName}">` + " " + " " +
-            'Add: <input type="number" id="update-number" value="1">' + " " + " " +
-            '<button type="submit" id="add-submit">Submit</button>' +
-            '<div class="line"></div>' +
-            '<table class="table">' +
-            '<tr> <th>Name</th> <th>Type</th> <th>Length</th> <th>Default</th> <th>Index</th> </tr>' +
-            '</table>' +
-            '</form></div>';
-        $("#content").html(table);
+    	$("#update-name").attr("value", tableName);
+    	article.hide();
+    	$("#table").show();
     }
 });
 

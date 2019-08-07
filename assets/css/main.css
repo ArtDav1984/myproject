@@ -27,6 +27,12 @@ ul {
 .database-list {
     margin-left: -8px;
 }
+.article {
+	display: none;
+}
+#new-db {
+	display: block;
+}
 #create-db {
     cursor: pointer;
 }
@@ -200,7 +206,7 @@ legend {
     border-radius: 3px;
     background-color: #fff;
     padding: 3px;
-    position: absolute;
+    position: fixed;
     left: 40%;
     top: 40%;
     display: none;
@@ -253,4 +259,16 @@ legend {
 .cancel-db-update {
     width: 80px;
     margin-left: 5px;
+}
+.load-aside {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    display: none;
+}
+.load-content {
+    position: fixed;
+    left: 50%;
+    top: 40%;
+    display: none;
 }
