@@ -260,7 +260,7 @@ $("#content").on('click','#table-submit',function (event) {
     event.preventDefault();
     tableName = $("#tableName").val();
     numberColumn = $("#numberColumn").val();
-    $(".table").html('');
+    $(".fields").remove();
     $("#tableName").val('');
 
     if (tableName !== '' && numberColumn !== '') {
@@ -312,7 +312,7 @@ function addTableFields(numberColumnLength) {
 }
 
 function createTableFields() {
-         tableFields = '<tr>' +
+         tableFields = '<tr class="fields">' +
         '<td><input type="text" name="nameField" class="name-field" /></td>' +
         '<td><select class="type-field">' +
         '<option>INT</option><option>VARCHAR</option><option>TEXT</option><option>DATE</option>' +
