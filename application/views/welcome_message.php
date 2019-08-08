@@ -60,60 +60,63 @@
             </form>
         </div>
 
-		<div id="new-table" class="article">
-			<form method="post">
-				<fieldset>
-					<legend><i class="far fa-list-alt"></i> Create table</legend>
-					<span>Name:</span> <input type="text" name="tableName" id="tableName"/>
-					<span id="columns-title">Number of columns:</span>
-					<input type="number" name="numberColumn" id="numberColumn" value="4"/>
-					<br /><br />
-					<button type="submit" id="table-submit">Go</button>
-				</fieldset>
-			</form>
-		</div>
+        <div id="new-table" class="article">
+            <form method="post">
+                <fieldset>
+                    <legend><i class="far fa-list-alt"></i> Create table</legend>
+                    <span>Name:</span> <input type="text" name="tableName" id="tableName"/>
+                    <span id="columns-title">Number of columns:</span>
+                    <input type="number" name="numberColumn" id="numberColumn" value="4"/>
+                    <br /><br />
+                    <button type="submit" id="table-submit">Go</button>
+                </fieldset>
+            </form>
+        </div>
 
-		<div id="update-db" class="article">
-			<form method="post">
-				<fieldset>
-					<legend><i class="fas fa-pencil-alt"></i> Rename database to</legend>
-					<input type="text" name="tableName" id="dbName"/>
-					<br /><br />
-					<button type="submit" id="update-db-submit">Go</button>
-				</fieldset>
-			</form>
-		</div>
+        <div id="update-db" class="article">
+            <form method="post">
+                <fieldset>
+                    <legend><i class="fas fa-pencil-alt"></i> Rename database to</legend>
+                    <input type="text" name="tableName" id="dbName"/>
+                    <br /><br />
+                    <button type="submit" id="update-db-submit">Go</button>
+                </fieldset>
+            </form>
+        </div>
 
-		<div id="del-db" class="article">
-			<form method="post">
-				<fieldset>
-					<legend><i class="far fa-calendar-times"></i> Remove database</legend>
-					<button id="delete-db-submit">Drop the database (DROP)</button>
-				</fieldset>
-			</form>
-		</div>
+        <div id="del-db" class="article">
+            <form method="post">
+                <fieldset>
+                    <legend><i class="far fa-calendar-times"></i> Remove database</legend>
+                    <button id="delete-db-submit">Drop the database (DROP)</button>
+                </fieldset>
+            </form>
+        </div>
 
-		<div id="table-columns" class="article">
+        <div id="table-columns" class="article">
 
-		</div>
+        </div>
 
-		<div id="table" class="article">
-			<form method="post">
-				Table name: <input type="text" id="update-name">
-				Add: <input type="number" id="update-number" value="1">
-				<button type="submit" id="add-submit">Submit</button>
-				<div class="line"></div>
-				<table class="table">
-					<tr>
-						<th>Name</th>
-						<th>Type</th>
-						<th>Length/Values</th>
-						<th>Default</th>
-						<th>Index</th>
-					</tr>
-				</table>
-			</form>
-		</div>
+        <div id="table" class="article">
+            <form method="post">
+                Table name: <input type="text" id="update-name">
+                Add: <input type="number" id="update-number" value="1">
+                <button type="submit" id="add-submit">Go</button>
+                <div class="line"></div>
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Length/Values</th>
+                        <th>Default</th>
+                        <th>Index</th>
+                    </tr>
+                </table>
+                <div id="bot-line">
+                    <button type="submit" id="save-table">Save</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div id="update-db-modal">
@@ -131,7 +134,7 @@
             </form>
         </div>
     </div>
-    
+
     <image class="load-content" src="<?php echo base_url() ?>assets/img/load_2.gif" />
 
 </section>

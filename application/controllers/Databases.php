@@ -22,7 +22,6 @@
 			if ($this->input->is_ajax_request()) {
 				$db_name   = $this->input->post('name');
 				$char_name = $this->input->post('charsets');
-
 				if (isset($db_name) && isset($char_name)) {
 					$database = $this->DbName->createDatabase($db_name, $char_name);
 					echo json_encode(['data' => $database, 'type' => 'success']);
@@ -39,7 +38,7 @@
 				$current_db_name = $this->input->post('dbName');
 				
 				if(isset($new_db_name) && isset($current_db_name)) {
-				    $database = $this->DbName->updateDatabase($new_db_name, $current_db_name);
+					$database = $this->DbName->updateDatabase($new_db_name, $current_db_name);
 					echo json_encode(['data' => $database, 'type' => 'success']);
 				}  else {
 					echo json_encode(['data' => 'null', 'type' => 'fail']);

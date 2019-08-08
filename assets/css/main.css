@@ -28,10 +28,10 @@ ul {
     margin-left: -8px;
 }
 .article {
-	display: none;
+    display: none;
 }
 #new-db {
-	display: block;
+    display: block;
 }
 #create-db {
     cursor: pointer;
@@ -57,6 +57,7 @@ ul {
     border-radius: 20px;
     border: 1px solid #848696;
     cursor: pointer;
+    background-color: #f4f5fd;
 }
 #db-submit:hover, #table-submit:hover, #update-db-submit {
     background-color: #f4f5fd;
@@ -271,4 +272,30 @@ legend {
     left: 50%;
     top: 40%;
     display: none;
+}
+.name-field,
+.type-field,
+.length-field,
+.default-field,
+.index-field{
+    height: 25px;
+    width: 170px;
+}
+#bot-line {
+    background-color: #b0b7c8;
+    height: 50px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+#save-table {
+    width: 50px;
+    height: 25px;
+    margin-left: 92%;
+    margin-top: 12px;
+    border-radius: 20px;
+    border: 1px solid #848696;
+    cursor: pointer;
+}
+#save-table:hover {
+    background-color: #f4f5fd;
 }

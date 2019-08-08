@@ -2,19 +2,21 @@ var database = '';
 var dbName = '';
 var newDbName = '';
 var tableName = '';
+var numberColumn = '';
+var tableFields = '';
 var article = $(".article");
 
 $("#create-db").click(function () {
-	article.hide();
-	$("#new-db").show();
-	$("#db-name").val('');
+    article.hide();
+    $("#new-db").show();
+    $("#db-name").val('');
 });
 
 $("#content").on('click', '#db-submit',function (event) {
     event.preventDefault();
     var charName = $(".charset").val();
-	var loadContent = $(".load-content");
-	dbName = $("#db-name").val();
+    var loadContent = $(".load-content");
+    dbName = $("#db-name").val();
 
     if (dbName !== '') {
         loadContent.show();
@@ -48,29 +50,34 @@ $("#content").on('click', '#db-submit',function (event) {
         }).fail(error => {
             console.log(error);
         })
-    }
+    } else {
+    	alert("required field");
+	}
 });
 
 $(".databases").on('click', '.database', function () {
     var parent = $(this).parent("li");
-        dbName = parent.attr("data-base");
-        database = $(this);
-        article.hide();
-        $("#new-table").show();
-        $("#update-db").show();
-        $("#del-db").show();
+    dbName = parent.attr("data-base");
+    database = $(this);
+    article.hide();
+    $("#new-table").show();
+    $("#update-db").show();
+    $("#del-db").show();
 });
 
 $("#content").on('click','#update-db-submit',function (event){
     event.preventDefault();
     newDbName = $("#dbName").val();
+    $("#dbName").val('');
 
     if (newDbName !== '') {
         $("#update-db-modal").show();
         $("#update-db-modal > #modal-body > p").html(`CREATE DATABASE ${newDbName} / DROP DATABASE ${dbName}`);
         var button = $(".confirm-db");
         $(button).attr("id", "confirm-db-update");
-    }
+    } else {
+    	alert("required field");
+	}
 });
 
 $("#update-db-modal").on('click', '#confirm-db-update', function (event) {
@@ -138,7 +145,7 @@ $("#update-db-modal").on('click', '#confirm-db-delete', function (event) {
                 $(parent).remove();
                 article.hide();
                 $("#new-db").show();
-				$("#db-name").val('');
+                $("#db-name").val('');
             }
         }
     }).fail(error => {
@@ -232,9 +239,9 @@ $(".tables-list").on('click', '.table-name', function () {
                     tr.append(th)
                 });
                 var tableColumn = $("#table-columns");
-				article.hide();
-				$(tableColumn).html(table);
-				$(tableColumn).show();
+                article.hide();
+                $(tableColumn).html(table);
+                $(tableColumn).show();
             }
         }
     }).fail(error => {
@@ -252,14 +259,95 @@ $(".tables-list").on('click', '.new-table', function () {
 $("#content").on('click','#table-submit',function (event) {
     event.preventDefault();
     tableName = $("#tableName").val();
-    var numberColumn = $("#numberColumn").val();
+    numberColumn = $("#numberColumn").val();
+    $(".table").html('');
+    $("#tableName").val('');
 
     if (tableName !== '' && numberColumn !== '') {
-    	$("#update-name").attr("value", tableName);
-    	article.hide();
-    	$("#table").show();
-    }
+    	addTableFields(numberColumn);
+    } else {
+    	alert("required field");
+	}
 });
+
+$("#content").on('click','#add-submit',function (event) {
+    event.preventDefault();
+    tableName = $("#update-name").val();
+    var addColumn = $("#update-number").val();
+    numberColumn = numberColumn + addColumn;
+
+    if (tableName !== '' && addColumn !== '') {
+    	addTableFields(addColumn);
+    } else {
+    	alert("required field");
+	}
+});
+
+$("#save-table").click(function (event) {
+    event.preventDefault();
+    var nameField = getFieldValues($(".name-field"));
+    var typeField = getFieldValues($(".type-field option:selected"));
+    var lengthField = getFieldValues($(".length-field"));
+    var defaultField = getFieldValues($(".default-field option:selected"));
+    var indexField = getFieldValues($(".index-field option:selected"));
+});
+
+function getFieldValues(fieldName) {
+    var array = [];
+    fieldName.each(function() {
+        array.push($(this).val());
+    });
+
+    return array;
+}
+
+function addTableFields(numberColumnLength) {
+	$("#update-name").attr("value", tableName);
+	article.hide();
+	$("#table").show();
+	for (var i = 1; i <= numberColumnLength; i ++) {
+		createTableFields();
+		$(".table").append(tableFields);
+	}
+}
+
+function createTableFields() {
+         tableFields = '<tr>' +
+        '<td><input type="text" name="nameField" class="name-field" /></td>' +
+        '<td><select class="type-field">' +
+        '<option>INT</option><option>VARCHAR</option><option>TEXT</option><option>DATE</option>' +
+        '<optgroup label="Numeric">' +
+        '<option>TINYINT</option><option>SMALLINT</option><option>MEDIUMINT</option><option>INT</option>' +
+        '<option>BIGINT</option><option>-</option><option>DECIMAL</option><option>FLOAT</option><option>DOUBLE</option>' +
+        '<option>REAL</option><option>-</option><option>BIT</option><option>BOOLEAN</option><option>SERIAL</option>' +
+        '</optgroup>' +
+        '<optgroup label="Date and time">' +
+        '<option>DATE</option><option>DATETIME</option><option>TIMESTAMP</option><option>TIME</option>' +
+        '<option>YEAR</option>' +
+        '</optgroup>' +
+        '<optgroup label="String">' +
+        '<option>CHAR</option><option>VARCHAR</option><option>-</option><option>TINYTEXT</option><option>TEXT</option>' +
+        '<option>MEDIUMTEXT</option><option>LONGTEXT</option><option>-</option><option>BINARY</option>' +
+        '<option>VARBINARY</option><option>-</option>' +
+        '<option>TINYBLOB</option><option>MEDIUMBLOB</option><option>BLOB</option><option>LONGBLOB</option>' +
+        '<option>-</option><option>ENUM</option><option>SET</option>' +
+        '</optgroup>' +
+        '</select>' +
+        '</td>' +
+        '<td><input type="text" name="lengthField" class="length-field"></td>' +
+        '<td>' +
+        '<select class="default-field">' +
+        '<option>None</option><option>NULL</option><option>CURRENT_TIMESTAMP</option>' +
+        '</select>' +
+        '</td>' +
+        '<td>' +
+        '<select class="index-field">' +
+        '<option>---</option><option>PRIMARY</option><option>UNIQUE</option><option>INDEX</option>' +
+        '<option>FULLTEXT</option><option>SPATIAL</option>' +
+        '</select>' +
+        '</td>' +
+        '</tr>';
+}
 
 function setAttributes(el, attrs) {
     for(var key in attrs) {
