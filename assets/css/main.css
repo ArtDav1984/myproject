@@ -299,3 +299,6 @@ legend {
 #save-table:hover {
     background-color: #f4f5fd;
 }
+.fields {
+    height: 60px;
+}

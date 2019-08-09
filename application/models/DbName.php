@@ -12,32 +12,45 @@
 		
 		public  function getDatabasesNames()
 		{
-			$databases = $this->db->query("SHOW DATABASES")->result_array();
-			return $databases;
+			$query = "SHOW DATABASES";
+			$databases = [];
+			if ($this->db->query($query)) {
+				$databases = $this->db->query($query)->result_array();
+				if ($databases === []) {
+					return null;
+				}
+				return $databases;
+			}
 		}
 		
 		public function getCharacterSet()
 		{
-			$charsArr = array();
-			$chars = $this->db->query("SHOW CHARACTER SET")->result_array();
-			foreach ($chars as $char => $row) {
-				$charsArr[] = $row['Default collation'];
+			$query = "SHOW CHARACTER SET";
+			$charsArr = [];
+			if ($this->db->query($query)) {
+				$chars = $this->db->query($query)->result_array();
+				foreach ($chars as $char => $row) {
+					$charsArr[] = $row['Default collation'];
+				}
+				if ($charsArr === []) {
+					return null;
+				}
+				return $charsArr;
 			}
-			return $charsArr;
 		}
 		
 		public function createDatabase($db_name, $char_name)
 		{
-			if ($this->dbforge->create_database($db_name)) {
+			if ($this->dbforge->create_database($db_name, TRUE)) {
 				return $db_name;
 			}
-			return false;
+			return null;
 		}
 		
 		public function updateDatabase($new_db_name, $current_db_name)
 		{
-			$tables = $this->TableName->getTablesName($current_db_name);
-			if ($this->dbforge->create_database($new_db_name)) {
+			$tables = $this->TableName->getTablesName($current_db_name, true);
+			if ($this->dbforge->create_database($new_db_name, TRUE)) {
 				foreach ($tables as $table) {
 					$this->db->query("RENAME TABLE $current_db_name.$table TO $new_db_name.$table");
 				}
@@ -45,7 +58,7 @@
 					return $new_db_name;
 				}
 			}
-			return false;
+			return null;
 		}
 		
 		public function deleteDatabase($db_name)
@@ -56,7 +69,6 @@
 			return false;
 		}
 	}
-	
 	
 	
 	

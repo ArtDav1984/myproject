@@ -3,7 +3,6 @@ var dbName = '';
 var newDbName = '';
 var tableName = '';
 var numberColumn = '';
-var tableFields = '';
 var article = $(".article");
 
 $("#create-db").click(function () {
@@ -51,8 +50,8 @@ $("#content").on('click', '#db-submit',function (event) {
             console.log(error);
         })
     } else {
-    	alert("required field");
-	}
+        alert("required field");
+    }
 });
 
 $(".databases").on('click', '.database', function () {
@@ -76,8 +75,8 @@ $("#content").on('click','#update-db-submit',function (event){
         var button = $(".confirm-db");
         $(button).attr("id", "confirm-db-update");
     } else {
-    	alert("required field");
-	}
+        alert("required field");
+    }
 });
 
 $("#update-db-modal").on('click', '#confirm-db-update', function (event) {
@@ -198,7 +197,12 @@ $(".databases").on('click', '.db-name', function () {
                         ul.append(li);
                     });
                 }
-            }
+            } else {
+            	setTimeout(unload, 300);
+            	function unload() {
+					loadAside.hide();
+				}
+			}
         }).fail(error => {
             console.log(error);
         })
@@ -264,10 +268,10 @@ $("#content").on('click','#table-submit',function (event) {
     $("#tableName").val('');
 
     if (tableName !== '' && numberColumn !== '') {
-    	addTableFields(numberColumn);
+        addTableFields(numberColumn);
     } else {
-    	alert("required field");
-	}
+        alert("required field");
+    }
 });
 
 $("#content").on('click','#add-submit',function (event) {
@@ -277,10 +281,10 @@ $("#content").on('click','#add-submit',function (event) {
     numberColumn = numberColumn + addColumn;
 
     if (tableName !== '' && addColumn !== '') {
-    	addTableFields(addColumn);
+        addTableFields(addColumn);
     } else {
-    	alert("required field");
-	}
+        alert("required field");
+    }
 });
 
 $("#save-table").click(function (event) {
@@ -290,6 +294,31 @@ $("#save-table").click(function (event) {
     var lengthField = getFieldValues($(".length-field"));
     var defaultField = getFieldValues($(".default-field option:selected"));
     var indexField = getFieldValues($(".index-field option:selected"));
+
+    $.ajax({
+        url: 'tables/create',
+        type: 'POST',
+        async: true,
+        dataType: 'JSON',
+        data: {
+            dbName: dbName,
+            tableName: tableName,
+            numberColumn: numberColumn,
+            dataFields: {
+                nameField: nameField,
+                typeField: typeField,
+                lengthField: lengthField,
+                defaultField: defaultField,
+                indexField: indexField
+            }
+        }
+    }).done(response => {
+        if (response.type === 'success') {
+           console.log(response.data);
+        }
+    }).fail(error => {
+        console.log(error);
+    })
 });
 
 function getFieldValues(fieldName) {
@@ -302,51 +331,69 @@ function getFieldValues(fieldName) {
 }
 
 function addTableFields(numberColumnLength) {
-	$("#update-name").attr("value", tableName);
-	article.hide();
-	$("#table").show();
-	for (var i = 1; i <= numberColumnLength; i ++) {
-		createTableFields();
-		$(".table").append(tableFields);
-	}
+    $("#update-name").attr("value", tableName);
+    article.hide();
+    $("#table").show();
+    var tableFields = createTableFields();
+    for (var i = 1; i <= numberColumnLength; i ++) {
+        $(".table").append(tableFields);
+    }
 }
 
 function createTableFields() {
-         tableFields = '<tr class="fields">' +
-        '<td><input type="text" name="nameField" class="name-field" /></td>' +
-        '<td><select class="type-field">' +
-        '<option>INT</option><option>VARCHAR</option><option>TEXT</option><option>DATE</option>' +
-        '<optgroup label="Numeric">' +
-        '<option>TINYINT</option><option>SMALLINT</option><option>MEDIUMINT</option><option>INT</option>' +
-        '<option>BIGINT</option><option>-</option><option>DECIMAL</option><option>FLOAT</option><option>DOUBLE</option>' +
-        '<option>REAL</option><option>-</option><option>BIT</option><option>BOOLEAN</option><option>SERIAL</option>' +
-        '</optgroup>' +
-        '<optgroup label="Date and time">' +
-        '<option>DATE</option><option>DATETIME</option><option>TIMESTAMP</option><option>TIME</option>' +
-        '<option>YEAR</option>' +
-        '</optgroup>' +
-        '<optgroup label="String">' +
-        '<option>CHAR</option><option>VARCHAR</option><option>-</option><option>TINYTEXT</option><option>TEXT</option>' +
-        '<option>MEDIUMTEXT</option><option>LONGTEXT</option><option>-</option><option>BINARY</option>' +
-        '<option>VARBINARY</option><option>-</option>' +
-        '<option>TINYBLOB</option><option>MEDIUMBLOB</option><option>BLOB</option><option>LONGBLOB</option>' +
-        '<option>-</option><option>ENUM</option><option>SET</option>' +
-        '</optgroup>' +
-        '</select>' +
-        '</td>' +
-        '<td><input type="text" name="lengthField" class="length-field"></td>' +
-        '<td>' +
-        '<select class="default-field">' +
-        '<option>None</option><option>NULL</option><option>CURRENT_TIMESTAMP</option>' +
-        '</select>' +
-        '</td>' +
-        '<td>' +
-        '<select class="index-field">' +
-        '<option>---</option><option>PRIMARY</option><option>UNIQUE</option><option>INDEX</option>' +
-        '<option>FULLTEXT</option><option>SPATIAL</option>' +
-        '</select>' +
-        '</td>' +
-        '</tr>';
+
+    var nameFieldObj = {
+        "Numeric":       ["TINYINT", "SMALLINT", "MEDIUMINT", "INT", "BIGINT",
+                          "DECIMAL", "FLOAT", "DOUBLE", "REAL", "BIT", "BOOLEAN", "SERIAL"],
+        "Date and time": ["DATE", "DATETIME", "TIMESTAMP", "TIME", "YEAR"],
+        "String":        ["CHAR", "VARCHAR", "TINYTEXT", "TEXT", "MEDIUMTEXT", "LONGTEXT", "BINARY",
+                          "VARBINARY", "TINYBLOB", "MEDIUMBLOB", "BLOB", "LONGBLOB", "ENUM", "SET"],
+    };
+
+    var nameFieldArr    = ["INT", "VARCHAR", "TEXT", "DATE"];
+    var defaultFieldArr = ["None", "NULL", "CURRENT_TIMESTAMP"];
+    var indexFieldArr   = ["---", "PRIMARY", "UNIQUE", "INDEX", "FULLTEXT", "SPATIAL"];
+
+    var tableFields = '';
+    tableFields += '<tr class="fields">' +
+                   '<td><input type="text" name="nameField" class="name-field" /></td>' +
+                   '<td><select class="type-field">';
+
+    nameFieldArr.forEach(function (val) {
+        tableFields += `<option>${val}</optgroup>`;
+    });
+
+    $.each(nameFieldObj, function (k, v) {
+        tableFields += `<optgroup label="${k}">`;
+        v.forEach(function (val) {
+            tableFields += `<option>${val}</option>`;
+        });
+        tableFields += '</optgroup>';
+    });
+
+    tableFields += '</select>' +
+                   '</td>' +
+                   '<td><input type="text" name="lengthField" class="length-field"></td>' +
+                   '<td>' +
+                   '<select class="default-field">';
+
+    defaultFieldArr.forEach(function (val) {
+        tableFields += `<option>${val}</option>`;
+    });
+
+    tableFields += '</select>' +
+                   '</td>' +
+                   '<td>' +
+                   '<select class="index-field">';
+
+    indexFieldArr.forEach(function (val) {
+        tableFields += `<option>${val}</option>`;
+    });
+
+    tableFields += '</select>' +
+                   '</td>' +
+                   '</tr>';
+    return tableFields;
 }
 
 function setAttributes(el, attrs) {

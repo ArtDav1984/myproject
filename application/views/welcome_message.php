@@ -22,6 +22,8 @@
                     <span id="create-db">Create Database</span>
                 </li>
             </div>
+
+			<?php if (!is_null($databases)) : ?>
 			
 			<?php foreach ($databases as $database => $item) : ?>
 
@@ -39,6 +41,8 @@
 			
 			<?php endforeach; ?>
 
+			<?php endif; ?>
+
         </ul>
     </div>
 
@@ -50,11 +54,17 @@
                 </label> <br /><br />
                 <input type="text" name="name" id="db-name" placeholder="Database name" />
                 <select id="charsets" name="charsets" aria-expanded="false">
+
+					<?php if (!is_null($chars)) : ?>
+
 					<?php foreach ($chars as $char) : ?>
                         <option value="<?= $char ?>" class="charset">
 							<?= $char ?>
                         </option>
 					<?php endforeach; ?>
+
+					<?php endif; ?>
+
                 </select>
                 <button type="submit" id="db-submit">Create</button>
             </form>

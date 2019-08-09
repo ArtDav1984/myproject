@@ -14,9 +14,11 @@
 				$db_name = $this->input->get_request_header('dbName');
 				if ($db_name) {
 					$tables = $this->TableName->getTablesName($db_name);
-					echo json_encode(['data' => $tables, 'type' => 'success']);
-				} else {
-					echo json_encode(['data' => null, 'type' => 'fail']);
+					if (!is_null($tables)) {
+						echo json_encode(['data' => $tables, 'type' => 'success']);
+					} else {
+						echo json_encode(['type' => 'fail']);
+					}
 				}
 			}
 		}
@@ -29,7 +31,26 @@
 				
 				if ($table_name && $db_name) {
 					$columns = $this->TableName->getTablesColumn($table_name, $db_name);
-					echo json_encode(['data' => $columns, 'type' => 'success']);
+					if (!is_null($columns)) {
+						echo json_encode(['data' => $columns, 'type' => 'success']);
+					} else {
+						echo json_encode(['type' => 'fail']);
+					}
+				}
+			}
+		}
+		
+		public function create()
+		{
+			if ($this->input->is_ajax_request()) {
+				$db_name = $this->input->post('dbName');
+				$table_name = $this->input->post('tableName');
+				$number_column = $this->input->post('numberColumn');
+				$data_fields = $this->input->post('dataFields');
+				
+				if (isset($db_name) && isset($table_name) && isset($number_column) && isset($data_fields)) {
+					$fields = $this->TableName->createTable($db_name, $table_name, $number_column, $data_fields);
+					echo json_encode(['data' => $fields, 'type' => 'success']);
 				} else {
 					echo json_encode(['data' => null, 'type' => 'fail']);
 				}
