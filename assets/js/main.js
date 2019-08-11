@@ -11,7 +11,7 @@ $("#create-db").click(function () {
     $("#db-name").val('');
 });
 
-$("#content").on('click', '#db-submit',function (event) {
+$("section").on('click', '#db-submit',function (event) {
     event.preventDefault();
     var charName = $(".charset").val();
     var loadContent = $(".load-content");
@@ -54,7 +54,7 @@ $("#content").on('click', '#db-submit',function (event) {
     }
 });
 
-$(".databases").on('click', '.database', function () {
+$("section").on('click', '.database', function () {
     var parent = $(this).parent("li");
     dbName = parent.attr("data-base");
     database = $(this);
@@ -64,7 +64,7 @@ $(".databases").on('click', '.database', function () {
     $("#del-db").show();
 });
 
-$("#content").on('click','#update-db-submit',function (event){
+$("section").on('click','#update-db-submit',function (event){
     event.preventDefault();
     newDbName = $("#dbName").val();
     $("#dbName").val('');
@@ -79,7 +79,7 @@ $("#content").on('click','#update-db-submit',function (event){
     }
 });
 
-$("#update-db-modal").on('click', '#confirm-db-update', function (event) {
+$("section").on('click', '#confirm-db-update', function (event) {
     event.preventDefault();
     var loadContent = $(".load-content");
     loadContent.show();
@@ -113,7 +113,7 @@ $("#update-db-modal").on('click', '#confirm-db-update', function (event) {
     })
 });
 
-$("#content").on('click','#delete-db-submit',function (event){
+$("section").on('click','#delete-db-submit',function (event){
     event.preventDefault();
 
     $("#update-db-modal").show();
@@ -157,7 +157,7 @@ $(".cancel-db-update").click(function () {
     $("#update-db-modal").hide()
 });
 
-$(".databases").on('click', '.db-name', function () {
+$("section").on('click', '.db-name', function () {
     var parent = $(this).parent('li');
     var plus = parent.find('.fa-plus-square');
     var minus = parent.find('.fa-minus-square');
@@ -212,7 +212,7 @@ $(".databases").on('click', '.db-name', function () {
     parent.attr('aria-expanded', 'true');
 });
 
-$(".tables-list").on('click', '.table-name', function () {
+$("section").on('click', '.table-name', function () {
     var expended = $(this).attr('aria-expanded');
     var tableName = $(this).attr("data-table");
     var parent = $(this).parent('ul').parent('div').parent('li');
@@ -254,14 +254,14 @@ $(".tables-list").on('click', '.table-name', function () {
     })
 });
 
-$(".tables-list").on('click', '.new-table', function () {
+$("section").on('click', '.new-table', function () {
     var parent = $(this).parent('ul').parent('div').parent('li');
     dbName = parent.attr("data-base");
     article.hide();
     $("#new-table").show();
 });
 
-$("#content").on('click','#table-submit',function (event) {
+$("section").on('click','#table-submit',function (event) {
     event.preventDefault();
     tableName = $("#tableName").val();
     numberColumn = $("#numberColumn").val();
@@ -276,7 +276,7 @@ $("#content").on('click','#table-submit',function (event) {
     }
 });
 
-$("#content").on('click','#add-submit',function (event) {
+$("section").on('click','#add-submit',function (event) {
     event.preventDefault();
     tableName = $("#update-name").val();
     var addColumn = $("#update-number").val();
