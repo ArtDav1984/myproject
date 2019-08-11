@@ -95,6 +95,7 @@ $("#update-db-modal").on('click', '#confirm-db-update', function (event) {
         }
     }).done(response => {
         if (response.type === 'success') {
+        	dbName = response.data;
             $("#update-db-modal").hide();
             setTimeout(load, 300);
             function load() {
@@ -265,7 +266,8 @@ $("#content").on('click','#table-submit',function (event) {
     tableName = $("#tableName").val();
     numberColumn = $("#numberColumn").val();
     $(".fields").remove();
-    $("#tableName").val('');
+	$("#tableName").val('');
+	$("#numberColumn").val(4);
 
     if (tableName !== '' && numberColumn !== '') {
         addTableFields(numberColumn);
@@ -294,6 +296,8 @@ $("#save-table").click(function (event) {
     var lengthField = getFieldValues($(".length-field"));
     var defaultField = getFieldValues($(".default-field option:selected"));
     var indexField = getFieldValues($(".index-field option:selected"));
+	var loadContent = $(".load-content");
+	loadContent.show();
 
     $.ajax({
         url: 'tables/create',
@@ -314,7 +318,37 @@ $("#save-table").click(function (event) {
         }
     }).done(response => {
         if (response.type === 'success') {
-           console.log(response.data);
+			var dataBaseList = $(".database-list");
+			var parent = '';
+			$.each(dataBaseList, function (k, v) {
+				if (dbName === $(v).attr("data-base")) {
+					parent = $(v);
+				}
+			});
+			var tablesList = parent.find(".tables-list");
+			var plus = parent.find(".fa-plus-square");
+			var minus = parent.find(".fa-minus-square");
+			var loadAside = parent.find(".load-aside");
+
+			$(loadAside).show();
+			setTimeout(asideLoad, 300);
+			function asideLoad() {
+				$(loadAside).hide();
+				$(tablesList).slideDown();
+				$(plus).hide();
+				$(minus).show();
+				parent.attr("aria-expanded", "true")
+			}
+			
+        	setTimeout(load, 300);
+            function load() {
+			    loadContent.hide();
+				var li   = document.createElement('LI');
+				var icon = '<i class="far fa-list-alt"></i>';
+				setAttributes(li, {"class": "table-name", "data-table": tableName, "aria-expanded": "false"});
+				li.innerHTML = "‐‐‐" + icon + " " + tableName;
+				tablesList.append(li);
+		    };
         }
     }).fail(error => {
         console.log(error);
