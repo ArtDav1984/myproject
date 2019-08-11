@@ -2,7 +2,7 @@ var database = '';
 var dbName = '';
 var newDbName = '';
 var tableName = '';
-var numberColumn = '';
+var numberColumn;
 var article = $(".article");
 
 $("#create-db").click(function () {
@@ -163,8 +163,8 @@ $("section").on('click', '.db-name', function () {
     var minus = parent.find('.fa-minus-square');
     var ul = parent.find('.tables-list');
     var expended = parent.attr('aria-expanded');
-    var databaseName = parent.attr("data-base");
-    var loadAside = parent.find('.load-aside');
+	var loadAside = parent.find('.load-aside');
+	    dbName = parent.attr("data-base");
 
     ul.slideToggle();
     plus.toggle();
@@ -178,18 +178,17 @@ $("section").on('click', '.db-name', function () {
             async   : true,
             dataType: "JSON",
             headers    : {
-                dbName: databaseName
+                dbName: dbName
             }
         }).done(response => {
             if (response.type === 'success') {
                 setTimeout(load, 300);
                 function load() {
                     loadAside.hide();
-                    var newTable       = document.createElement("LI");
-                    var newIcon        = '<i class="far fa-list-alt"></i>';
-                    newTable.innerHTML = "‐‐‐" + newIcon + " " + "New";
-                    setAttributes(newTable, {"class": "new-table"});
-                    ul.append(newTable);
+                    if (dbName !== 'information_schema') {
+						var newTbl = newTable();
+						ul.append(newTbl);
+					}
                     response.data.forEach(function (table) {
                         var li   = document.createElement('LI');
                         var icon = '<i class="far fa-list-alt"></i>';
@@ -265,6 +264,7 @@ $("section").on('click','#table-submit',function (event) {
     event.preventDefault();
     tableName = $("#tableName").val();
     numberColumn = $("#numberColumn").val();
+	$("#update-name").attr("value", tableName);
     $(".fields").remove();
 	$("#tableName").val('');
 	$("#numberColumn").val(4);
@@ -280,7 +280,7 @@ $("section").on('click','#add-submit',function (event) {
     event.preventDefault();
     tableName = $("#update-name").val();
     var addColumn = $("#update-number").val();
-    numberColumn = numberColumn + addColumn;
+    numberColumn = parseInt(numberColumn) + parseInt(addColumn);
 
     if (tableName !== '' && addColumn !== '') {
         addTableFields(addColumn);
@@ -343,17 +343,31 @@ $("#save-table").click(function (event) {
         	setTimeout(load, 300);
             function load() {
 			    loadContent.hide();
+				if ($(tablesList).find('*').length == 0) {
+			    	var newTbl = newTable();
+					$(tablesList).append(newTbl);
+				}
 				var li   = document.createElement('LI');
 				var icon = '<i class="far fa-list-alt"></i>';
 				setAttributes(li, {"class": "table-name", "data-table": tableName, "aria-expanded": "false"});
 				li.innerHTML = "‐‐‐" + icon + " " + tableName;
 				tablesList.append(li);
+				$(".fields").remove();
+				$("#table").hide();
 		    };
         }
     }).fail(error => {
         console.log(error);
     })
 });
+
+function newTable() {
+	var newTable       = document.createElement("LI");
+	var newIcon        = '<i class="far fa-list-alt"></i>';
+	newTable.innerHTML = "‐‐‐" + newIcon + " " + "New";
+	setAttributes(newTable, {"class": "new-table"});
+	return newTable;
+}
 
 function getFieldValues(fieldName) {
     var array = [];
@@ -365,7 +379,6 @@ function getFieldValues(fieldName) {
 }
 
 function addTableFields(numberColumnLength) {
-    $("#update-name").attr("value", tableName);
     article.hide();
     $("#table").show();
     var tableFields = createTableFields();
