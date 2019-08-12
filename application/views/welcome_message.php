@@ -22,25 +22,25 @@
                     <span id="create-db">Create Database</span>
                 </li>
             </div>
-
+			
 			<?php if (!is_null($databases)) : ?>
+				
+				<?php foreach ($databases as $database => $item) : ?>
+
+                    <div class="vertical-line">
+                        <li class="database-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
+                            <image class="load-aside" src="<?php echo base_url() ?>assets/img/load.gif" />
+                            <i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i><span class="horizontal-line">-</span><i class="fas fa-database"></i>
+                            <span class="db-name database"><?= $item['Database']; ?></span>
+
+                            <div class="hide-line">
+                                <ul class="tables-list"> </ul>
+                            </div>
+                        </li>
+                    </div>
+				
+				<?php endforeach; ?>
 			
-			<?php foreach ($databases as $database => $item) : ?>
-
-                <div class="vertical-line">
-                    <li class="database-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
-                        <image class="load-aside" src="<?php echo base_url() ?>assets/img/load.gif" />
-                        <i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i><span class="horizontal-line">-</span><i class="fas fa-database"></i>
-                        <span class="db-name database"><?= $item['Database']; ?></span>
-
-                        <div class="hide-line">
-                            <ul class="tables-list"> </ul>
-                        </div>
-                    </li>
-                </div>
-			
-			<?php endforeach; ?>
-
 			<?php endif; ?>
 
         </ul>
@@ -54,15 +54,15 @@
                 </label> <br /><br />
                 <input type="text" name="name" id="db-name" placeholder="Database name" />
                 <select id="charsets" name="charsets" aria-expanded="false">
-
+					
 					<?php if (!is_null($chars)) : ?>
-
-					<?php foreach ($chars as $char) : ?>
-                        <option value="<?= $char ?>" class="charset">
-							<?= $char ?>
-                        </option>
-					<?php endforeach; ?>
-
+						
+						<?php foreach ($chars as $char) : ?>
+                            <option value="<?= $char ?>" class="charset">
+								<?= $char ?>
+                            </option>
+						<?php endforeach; ?>
+					
 					<?php endif; ?>
 
                 </select>
@@ -104,7 +104,27 @@
         </div>
 
         <div id="table-columns" class="article">
-
+            <div id="table-title">
+            
+            </div>
+            <div id="table-content">
+            
+            </div>
+        </div>
+        
+        <div id="table-structure" class="article">
+            <div id="structure-title">
+            
+            </div>
+            <table class="table-structure">
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Max-length</th>
+                    <th>Default</th>
+                    <th>Primary-key</th>
+                </tr>
+            </table>
         </div>
 
         <div id="table" class="article">

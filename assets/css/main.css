@@ -103,7 +103,7 @@ ul {
 }
 table {
     border-collapse: collapse !important;
-    margin: 20px auto 30px !important;
+    margin: 20px 0 !important;
 }
 td, th {
     text-align: left !important;
@@ -301,4 +301,22 @@ legend {
 }
 .fields {
     height: 60px;
+}
+#table-structure, #table-columns {
+    padding: 20px;
+}
+.browse {
+    width: 200px;
+    height: 30px;
+}
+.browse:last-child {
+    margin-left: 20px;
+}
+.structure-column {
+    cursor: pointer;
+}
+.browse-column, .structure-str {
+    background-color: transparent;
+    border: none;
+    outline: none;
 }

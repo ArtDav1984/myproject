@@ -30,7 +30,6 @@
                               FROM `INFORMATION_SCHEMA`.`COLUMNS`
                               WHERE `TABLE_SCHEMA`='$db_name'
                               AND `TABLE_NAME`='$table_name';";
-
 			$column_names = [];
 			if ($this->db->query($query)) {
 				$columns = $this->db->query($query)->result_array();
@@ -46,7 +45,7 @@
 		
 		public function createTable($db_name, $table_name, $number_column, $data_fields)
 		{
-			$fields = array();
+			$fieldsArr = array();
 			for ($i = 0; $i < $number_column; $i ++)
 			{
 				if ($data_fields['indexField'][$i] !== '---') {
@@ -54,13 +53,14 @@
 				} else {
 					$unique = false;
 				}
-			
+				
 				if ($data_fields['defaultField'][$i] !== 'None') {
 					$default = $data_fields['defaultField'][$i];
 				} else {
 					$default = false;
 				}
-				$fields[$data_fields['nameField'][$i]]  = array(
+				
+				$fieldsArr[$data_fields['nameField'][$i]]  = array(
 					'type'       => $data_fields['typeField'][$i],
 					'constraint' => $data_fields['lengthField'][$i],
 					'default'    => $default,
@@ -69,9 +69,25 @@
 			}
 			
 			$this->db->query("USE $db_name");
-			$this->dbforge->add_field($fields);
+			$this->dbforge->add_field($fieldsArr);
 			$this->dbforge->add_key($data_fields['nameField'][0], TRUE);
-			$this->dbforge->create_table($table_name, TRUE);
-			return $fields;
+			if ($this->dbforge->create_table($table_name, TRUE)){
+				return true;
+			}
+			return false;
+		}
+		
+		public function getTableStructure($db_name, $table_name)
+		{
+			$structure = array();
+			$this->db->query("USE $db_name");
+			$fields = $this->db->field_data($table_name);
+			foreach ($fields as $field) {
+				$structure[] = $field;
+			}
+			if ($structure === []) {
+				return null;
+			}
+			return $structure;
 		}
 	}

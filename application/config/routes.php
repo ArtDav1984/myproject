@@ -57,5 +57,6 @@ $route['databases/create'] = 'databases/create';
 $route['databases/update'] = 'databases/update';
 $route['databases/delete'] = 'databases/delete';
 $route['tables/column'] = 'tables/column';
+$route['tables/structure'] = 'tables/structure';
 $route['tables/create'] = 'tables/create';
 $route['tables'] = 'tables';

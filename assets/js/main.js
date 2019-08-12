@@ -55,13 +55,19 @@ $("section").on('click', '#db-submit',function (event) {
 });
 
 $("section").on('click', '.database', function () {
-    var parent = $(this).parent("li");
-    dbName = parent.attr("data-base");
-    database = $(this);
-    article.hide();
-    $("#new-table").show();
-    $("#update-db").show();
-    $("#del-db").show();
+	var parent = $(this).parent("li");
+	dbName = parent.attr("data-base");
+	database = $(this);
+    if (dbName !== 'information_schema') {
+		article.hide();
+		$("#new-table").show();
+		$("#update-db").show();
+		$("#del-db").show();
+	} else {
+		$("#db-name").val('');
+    	$(article).hide();
+    	$("#new-db").show();
+	}
 });
 
 $("section").on('click','#update-db-submit',function (event){
@@ -95,7 +101,7 @@ $("section").on('click', '#confirm-db-update', function (event) {
         }
     }).done(response => {
         if (response.type === 'success') {
-        	dbName = response.data;
+            dbName = response.data;
             $("#update-db-modal").hide();
             setTimeout(load, 300);
             function load() {
@@ -104,6 +110,7 @@ $("section").on('click', '#confirm-db-update', function (event) {
                 var li = database.parent('li');
                 li.removeAttr("data-base");
                 li.attr("data-base", response.data);
+                $(li).find('div').find('ul').find('li').attr("data-base", response.data);
                 article.hide();
                 $("#new-table").show();
             }
@@ -163,8 +170,8 @@ $("section").on('click', '.db-name', function () {
     var minus = parent.find('.fa-minus-square');
     var ul = parent.find('.tables-list');
     var expended = parent.attr('aria-expanded');
-	var loadAside = parent.find('.load-aside');
-	    dbName = parent.attr("data-base");
+    var loadAside = parent.find('.load-aside');
+    var dbName = parent.attr("data-base");
 
     ul.slideToggle();
     plus.toggle();
@@ -186,23 +193,23 @@ $("section").on('click', '.db-name', function () {
                 function load() {
                     loadAside.hide();
                     if (dbName !== 'information_schema') {
-						var newTbl = newTable();
-						ul.append(newTbl);
-					}
+                        var newTbl = newTable();
+                        ul.append(newTbl);
+                    }
                     response.data.forEach(function (table) {
                         var li   = document.createElement('LI');
                         var icon = '<i class="far fa-list-alt"></i>';
-                        setAttributes(li, {"class": "table-name", "data-table": table, "aria-expanded": "false"});
+                        setAttributes(li, {"class": "table-name", "data-table": table, "data-base": dbName});
                         li.innerHTML = "‐‐‐" + icon + " " + table;
                         ul.append(li);
                     });
                 }
             } else {
-            	setTimeout(unload, 300);
-            	function unload() {
-					loadAside.hide();
-				}
-			}
+                setTimeout(unload, 300);
+                function unload() {
+                    loadAside.hide();
+                }
+            }
         }).fail(error => {
             console.log(error);
         })
@@ -212,11 +219,9 @@ $("section").on('click', '.db-name', function () {
 });
 
 $("section").on('click', '.table-name', function () {
-    var expended = $(this).attr('aria-expanded');
-    var tableName = $(this).attr("data-table");
-    var parent = $(this).parent('ul').parent('div').parent('li');
-    dbName = parent.attr("data-base");
     var loadContent = $(".load-content");
+    tableName = $(this).attr("data-table");
+    dbName = $(this).attr("data-base");
     loadContent.show();
 
     $.ajax({
@@ -242,10 +247,15 @@ $("section").on('click', '.table-name', function () {
                     th.innerHTML = column;
                     tr.append(th)
                 });
-                var tableColumn = $("#table-columns");
+
+                var title = ` <button class="browse-column browse">Browse</button>
+                <button class="structure-column browse" data-base="${dbName}" data-table="${tableName}">Structure</button>`;
+                var tableContent = $("#table-content");
+
+                $("#table-title").html(title);
+                $(tableContent).html(table);
                 article.hide();
-                $(tableColumn).html(table);
-                $(tableColumn).show();
+                $("#table-columns").show();
             }
         }
     }).fail(error => {
@@ -264,10 +274,10 @@ $("section").on('click','#table-submit',function (event) {
     event.preventDefault();
     tableName = $("#tableName").val();
     numberColumn = $("#numberColumn").val();
-	$("#update-name").attr("value", tableName);
+    $("#update-name").attr("value", tableName);
     $(".fields").remove();
-	$("#tableName").val('');
-	$("#numberColumn").val(4);
+    $("#tableName").val('');
+    $("#numberColumn").val(4);
 
     if (tableName !== '' && numberColumn !== '') {
         addTableFields(numberColumn);
@@ -296,8 +306,8 @@ $("#save-table").click(function (event) {
     var lengthField = getFieldValues($(".length-field"));
     var defaultField = getFieldValues($(".default-field option:selected"));
     var indexField = getFieldValues($(".index-field option:selected"));
-	var loadContent = $(".load-content");
-	loadContent.show();
+    var loadContent = $(".load-content");
+    loadContent.show();
 
     $.ajax({
         url: 'tables/create',
@@ -318,55 +328,105 @@ $("#save-table").click(function (event) {
         }
     }).done(response => {
         if (response.type === 'success') {
-			var dataBaseList = $(".database-list");
-			var parent = '';
-			$.each(dataBaseList, function (k, v) {
-				if (dbName === $(v).attr("data-base")) {
-					parent = $(v);
-				}
-			});
-			var tablesList = parent.find(".tables-list");
-			var plus = parent.find(".fa-plus-square");
-			var minus = parent.find(".fa-minus-square");
-			var loadAside = parent.find(".load-aside");
+            var dataBaseList = $(".database-list");
+            var parent = '';
+            $.each(dataBaseList, function (k, v) {
+                if (dbName === $(v).attr("data-base")) {
+                    parent = $(v);
+                }
+            });
+            var tablesList = parent.find(".tables-list");
+            var plus = parent.find(".fa-plus-square");
+            var minus = parent.find(".fa-minus-square");
+            var loadAside = parent.find(".load-aside");
 
-			$(loadAside).show();
-			setTimeout(asideLoad, 300);
-			function asideLoad() {
-				$(loadAside).hide();
-				$(tablesList).slideDown();
-				$(plus).hide();
-				$(minus).show();
-				parent.attr("aria-expanded", "true")
-			}
-			
-        	setTimeout(load, 300);
+            $(loadAside).show();
+            setTimeout(asideLoad, 300);
+            function asideLoad() {
+                $(loadAside).hide();
+                $(tablesList).slideDown();
+                $(plus).hide();
+                $(minus).show();
+                parent.attr("aria-expanded", "true")
+            }
+
+            setTimeout(load, 300);
             function load() {
-			    loadContent.hide();
-				if ($(tablesList).find('*').length == 0) {
-			    	var newTbl = newTable();
-					$(tablesList).append(newTbl);
-				}
-				var li   = document.createElement('LI');
-				var icon = '<i class="far fa-list-alt"></i>';
-				setAttributes(li, {"class": "table-name", "data-table": tableName, "aria-expanded": "false"});
-				li.innerHTML = "‐‐‐" + icon + " " + tableName;
-				tablesList.append(li);
-				$(".fields").remove();
-				$("#table").hide();
-		    };
+                loadContent.hide();
+                if ($(tablesList).find('*').length == 0) {
+                    var newTbl = newTable();
+                    $(tablesList).append(newTbl);
+                }
+                var li   = document.createElement('LI');
+                var icon = '<i class="far fa-list-alt"></i>';
+                setAttributes(li, {"class": "table-name", "data-table": tableName, "data-base": dbName});
+                li.innerHTML = "‐‐‐" + icon + " " + tableName;
+                tablesList.append(li);
+
+                $(".fields").remove();
+                tablesStructure(response.data, dbName, tableName);
+            };
         }
     }).fail(error => {
         console.log(error);
     })
 });
 
+$("section").on('click', '.structure-column', function (event) {
+    event.preventDefault();
+    tableName = $(this).attr("data-table");
+    var loadContent = $(".load-content");
+    loadContent.show();
+
+    $.ajax({
+        url: 'tables/structure',
+        type: 'post',
+        async: true,
+        dataType: 'JSON',
+        headers: {
+            dbName: dbName,
+            tableName: tableName
+        }
+    }).done(response => {
+        if (response.type === 'success') {
+			setTimeout(load, 300);
+			function load() {
+				loadContent.hide();
+				tablesStructure(response.data, dbName, tableName);
+			};
+		}
+    }).fail(error => {
+        console.log(error);
+    })
+})
+
+function tablesStructure(fields, db, table) {
+	$(".field-data").remove();
+	$.each(fields, function (key, val) {
+		var tr = document.createElement('TR');
+		setAttributes(tr, {"class": "field-data"});
+		$('.table-structure').append(tr);
+		$.each(val, function (k, v) {
+			var td = document.createElement('TH');
+			td.innerHTML = v;
+			tr.append(td)
+		})
+	});
+
+	var brows = `<button class="table-name browse-str browse" data-base="${db}" data-table="${table}">`+
+		`Browse</button><button class="structure-str browse">Structure</button>`;
+	$("#structure-title").html(brows);
+
+	article.hide();
+	$("#table-structure").show();
+}
+
 function newTable() {
-	var newTable       = document.createElement("LI");
-	var newIcon        = '<i class="far fa-list-alt"></i>';
-	newTable.innerHTML = "‐‐‐" + newIcon + " " + "New";
-	setAttributes(newTable, {"class": "new-table"});
-	return newTable;
+    var newTable       = document.createElement("LI");
+    var newIcon        = '<i class="far fa-list-alt"></i>';
+    newTable.innerHTML = "‐‐‐" + newIcon + " " + "New";
+    setAttributes(newTable, {"class": "new-table"});
+    return newTable;
 }
 
 function getFieldValues(fieldName) {
@@ -391,10 +451,10 @@ function createTableFields() {
 
     var nameFieldObj = {
         "Numeric":       ["TINYINT", "SMALLINT", "MEDIUMINT", "INT", "BIGINT",
-                          "DECIMAL", "FLOAT", "DOUBLE", "REAL", "BIT", "BOOLEAN", "SERIAL"],
+            "DECIMAL", "FLOAT", "DOUBLE", "REAL", "BIT", "BOOLEAN", "SERIAL"],
         "Date and time": ["DATE", "DATETIME", "TIMESTAMP", "TIME", "YEAR"],
         "String":        ["CHAR", "VARCHAR", "TINYTEXT", "TEXT", "MEDIUMTEXT", "LONGTEXT", "BINARY",
-                          "VARBINARY", "TINYBLOB", "MEDIUMBLOB", "BLOB", "LONGBLOB", "ENUM", "SET"],
+            "VARBINARY", "TINYBLOB", "MEDIUMBLOB", "BLOB", "LONGBLOB", "ENUM", "SET"],
     };
 
     var nameFieldArr    = ["INT", "VARCHAR", "TEXT", "DATE"];
@@ -403,8 +463,8 @@ function createTableFields() {
 
     var tableFields = '';
     tableFields += '<tr class="fields">' +
-                   '<td><input type="text" name="nameField" class="name-field" /></td>' +
-                   '<td><select class="type-field">';
+        '<td><input type="text" name="nameField" class="name-field" /></td>' +
+        '<td><select class="type-field">';
 
     nameFieldArr.forEach(function (val) {
         tableFields += `<option>${val}</optgroup>`;
@@ -419,27 +479,27 @@ function createTableFields() {
     });
 
     tableFields += '</select>' +
-                   '</td>' +
-                   '<td><input type="text" name="lengthField" class="length-field"></td>' +
-                   '<td>' +
-                   '<select class="default-field">';
+        '</td>' +
+        '<td><input type="text" name="lengthField" class="length-field"></td>' +
+        '<td>' +
+        '<select class="default-field">';
 
     defaultFieldArr.forEach(function (val) {
         tableFields += `<option>${val}</option>`;
     });
 
     tableFields += '</select>' +
-                   '</td>' +
-                   '<td>' +
-                   '<select class="index-field">';
+        '</td>' +
+        '<td>' +
+        '<select class="index-field">';
 
     indexFieldArr.forEach(function (val) {
         tableFields += `<option>${val}</option>`;
     });
 
     tableFields += '</select>' +
-                   '</td>' +
-                   '</tr>';
+        '</td>' +
+        '</tr>';
     return tableFields;
 }
 

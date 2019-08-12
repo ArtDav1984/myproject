@@ -40,6 +40,23 @@
 			}
 		}
 		
+		public function structure()
+		{
+			if ($this->input->is_ajax_request()){
+				$db_name = $this->input->get_request_header('dbName');
+				$table_name = $this->input->get_request_header('tableName');
+				
+				if ($db_name && $table_name) {
+					$fields = $this->TableName->getTableStructure($db_name, $table_name);
+					if (!is_null($fields)){
+						echo json_encode(['data' => $fields, 'type' => 'success']);
+					} else {
+						echo json_encode(['type' => 'fail']);
+					}
+				}
+			}
+		}
+		
 		public function create()
 		{
 			if ($this->input->is_ajax_request()) {
@@ -49,10 +66,15 @@
 				$data_fields = $this->input->post('dataFields');
 				
 				if (isset($db_name) && isset($table_name) && isset($number_column) && isset($data_fields)) {
-					$fields = $this->TableName->createTable($db_name, $table_name, $number_column, $data_fields);
-					echo json_encode(['data' => $fields, 'type' => 'success']);
-				} else {
-					echo json_encode(['data' => null, 'type' => 'fail']);
+					$create = $this->TableName->createTable($db_name, $table_name, $number_column, $data_fields);
+					if ($create){
+						$fields = $this->TableName->getTableStructure($db_name, $table_name);
+						if (!is_null($fields)){
+							echo json_encode(['data' => $fields, 'type' => 'success']);
+						} else {
+							echo json_encode(['type' => 'fail']);
+						}
+					}
 				}
 			}
 		}
