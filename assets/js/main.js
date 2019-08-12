@@ -64,6 +64,7 @@ $("section").on('click', '.database', function () {
 		$("#update-db").show();
 		$("#del-db").show();
 	} else {
+    	dbName = '';
 		$("#db-name").val('');
     	$(article).hide();
     	$("#new-db").show();
