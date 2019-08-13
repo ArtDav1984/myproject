@@ -78,4 +78,19 @@
 				}
 			}
 		}
+		
+		public function update()
+		{
+			if ($this->input->is_ajax_request()) {
+				$db_name = $this->input->post('dbName');
+				$table_name = $this->input->post('tableName');
+				$newTable_name = $this->input->post('newTblName');
+				
+				if (isset($newTable_name) && isset($table_name)) {
+					if ($this->TableName->updateTable($db_name, $table_name, $newTable_name)){
+						echo json_encode(['type' => 'success']);
+					}
+				}
+			}
+		}
 	}

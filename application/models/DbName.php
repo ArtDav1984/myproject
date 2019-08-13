@@ -13,14 +13,10 @@
 		public  function getDatabasesNames()
 		{
 			$query = "SHOW DATABASES";
-			$databases = [];
 			if ($this->db->query($query)) {
-				$databases = $this->db->query($query)->result_array();
-				if ($databases === []) {
-					return null;
-				}
-				return $databases;
+				return $this->db->query($query)->result_array();
 			}
+			return false;
 		}
 		
 		public function getCharacterSet()

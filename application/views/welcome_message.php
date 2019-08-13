@@ -22,26 +22,25 @@
                     <span id="create-db">Create Database</span>
                 </li>
             </div>
-			
-			<?php if (!is_null($databases)) : ?>
+            
+            <?php if ($databases) : ?>
 				
-				<?php foreach ($databases as $database => $item) : ?>
-
-                    <div class="vertical-line">
-                        <li class="database-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
-                            <image class="load-aside" src="<?php echo base_url() ?>assets/img/load.gif" />
-                            <i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i><span class="horizontal-line">-</span><i class="fas fa-database"></i>
-                            <span class="db-name database"><?= $item['Database']; ?></span>
-
-                            <div class="hide-line">
-                                <ul class="tables-list"> </ul>
-                            </div>
-                        </li>
-                    </div>
-				
-				<?php endforeach; ?>
-			
-			<?php endif; ?>
+            <?php foreach ($databases as $database => $item) : ?>
+                
+                <div class="vertical-line">
+                    <li class="database-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
+                        <image class="load-aside" src="<?php echo base_url() ?>assets/img/load.gif" />
+                        <i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i><span class="horizontal-line">-</span><i class="fas fa-database"></i>
+                        <span class="db-name database"><?= $item['Database']; ?></span>
+                        <div class="hide-line">
+                            <ul class="tables-list"> </ul>
+                        </div>
+                    </li>
+                </div>
+                
+            <?php endforeach; ?>
+            
+            <?php endif; ?>
 
         </ul>
     </div>
@@ -109,6 +108,26 @@
             </div>
             <div id="table-content">
             
+            </div>
+
+            <div id="update-table">
+                <form method="post">
+                    <fieldset>
+                        <legend><i class="fas fa-pencil-alt"></i> Rename table to</legend>
+                        <input type="text" name="tableName" id="tblName"/>
+                        <br /><br />
+                        <button type="submit" id="update-tbl-submit">Go</button>
+                    </fieldset>
+                </form>
+            </div>
+
+            <div id="del-table">
+                <form method="post">
+                    <fieldset>
+                        <legend><i class="far fa-calendar-times"></i> Remove table</legend>
+                        <button id="delete-tbl-submit">Delete the table (DROP)</button>
+                    </fieldset>
+                </form>
             </div>
         </div>
         

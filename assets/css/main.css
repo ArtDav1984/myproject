@@ -9,7 +9,7 @@ section {
 }
 #aside {
     padding: 20px;
-    width: 28%;
+    width: 17%;
     height: 760px;
     overflow-y: auto;
     background-color: #f4f5fd;
@@ -40,18 +40,25 @@ ul {
     margin-top: 20px;
     margin-left: 50px;
 }
-#db-name, #charsets, #db-submit {
+#db-name,
+#charsets,
+#db-submit {
     height: 25px;
     outline: none;
 }
-#charsets, #columns-title {
+#charsets,
+#columns-title {
     width: 250px;
-    margin-left: 20px;
 }
 #db-name {
     width: 220px;
+    margin-right: 20px;
+    margin-bottom: 10px;
 }
-#db-submit, #table-submit, #update-db-submit {
+#db-submit,
+#table-submit,
+#update-db-submit,
+#update-tbl-submit {
     width: 60px;
     margin-left: 20px;
     border-radius: 20px;
@@ -59,16 +66,23 @@ ul {
     cursor: pointer;
     background-color: #f4f5fd;
 }
-#db-submit:hover, #table-submit:hover, #update-db-submit {
+#db-submit:hover,
+#table-submit:hover,
+#update-db-submit,
+#update-tbl-submit {
     background-color: #f4f5fd;
 }
 .tables-list {
     display: none;
 }
-.fa-minus-square, .fa-plus-square, .horizontal-line, .fa-database {
+.fa-minus-square,
+.fa-plus-square,
+.horizontal-line,
+.fa-database {
     color: #848696;
 }
-.fa-plus-square, .fa-minus-square {
+.fa-plus-square,
+.fa-minus-square {
     background-color: white;
 }
 .db-name:hover {
@@ -92,13 +106,17 @@ ul {
     padding-bottom: 5px;
 }
 .hide-line {
+    width: 310px;
     border-left: 1px solid #848696;
     margin-left: 25px;
 }
 .databases {
     margin-top: 20px;
 }
-.vertical-line:last-child {
+.databases .vertical-line {
+    width: 180px;
+}
+.databases .vertical-line:last-child {
     border-left: none;
 }
 table {
@@ -119,11 +137,18 @@ tr:nth-child(odd) {
 #content {
     background-color: #f8fafc;
     position: relative;
-    width: 72%;
+    width: 83%;
 }
-#new-table, #update-db, #del-db {
-    width: 95%;
+#new-table,
+#update-db,
+#del-db,
+#update-table,
+#del-table {
+    width: 98%;
     margin: 20px auto 0;
+}
+#update-table {
+    margin-top: 50px;
 }
 fieldset {
     height: 130px !important;
@@ -139,7 +164,10 @@ legend {
     border-radius: 2px;
     background-color: #fff;
 }
-#tableName, #update-name, #dbName {
+#tableName,
+#update-name,
+#dbName,
+#tblName {
     height: 25px;
     width: 250px;
     outline: none;
@@ -156,7 +184,9 @@ legend {
     width: 100%;
     height: 100%;
 }
-#table-submit, #update-db-submit {
+#table-submit,
+#update-db-submit,
+#update-tbl-submit{
     margin-left: 90%;
     background-color: #f6f7f8;
     height: 25px;
@@ -187,16 +217,20 @@ legend {
     background-color: #b0b7c8;
     height: 20px;
 }
-#delete-db-submit, .fa-calendar-times {
+#delete-db-submit,
+#delete-tbl-submit,
+.fa-calendar-times {
     color: red;
 }
-#delete-db-submit {
+#delete-db-submit,
+#delete-tbl-submit {
     background-color: transparent;
     border: none;
     outline: none;
     cursor: pointer;
 }
-#delete-db-submit:hover {
+#delete-db-submit:hover,
+#delete-tbl-submit:hover {
     text-decoration: underline;
     color: #fff;
     background-color: red;
@@ -303,7 +337,14 @@ legend {
     height: 60px;
 }
 #table-structure, #table-columns {
+    padding-top: 20px;
+}
+#table-structure {
     padding: 20px;
+}
+#table-title,
+#table-content {
+    padding-left: 20px;
 }
 .browse {
     width: 200px;

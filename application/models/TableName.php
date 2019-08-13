@@ -77,6 +77,15 @@
 			return false;
 		}
 		
+		public function updateTable($db_name, $table_name, $newTable_name)
+		{
+			$this->db->query("USE $db_name");
+			if ($this->dbforge->rename_table($table_name, $newTable_name)) {
+				return true;
+			}
+			return false;
+		}
+		
 		public function getTableStructure($db_name, $table_name)
 		{
 			$structure = array();

@@ -2,8 +2,10 @@ var database = '';
 var dbName = '';
 var newDbName = '';
 var tableName = '';
+var newTblName = '';
 var numberColumn;
 var article = $(".article");
+var loadContent = $(".load-content");
 
 $("#create-db").click(function () {
     article.hide();
@@ -14,7 +16,6 @@ $("#create-db").click(function () {
 $("section").on('click', '#db-submit',function (event) {
     event.preventDefault();
     var charName = $(".charset").val();
-    var loadContent = $(".load-content");
     dbName = $("#db-name").val();
 
     if (dbName !== '') {
@@ -55,20 +56,20 @@ $("section").on('click', '#db-submit',function (event) {
 });
 
 $("section").on('click', '.database', function () {
-	var parent = $(this).parent("li");
-	dbName = parent.attr("data-base");
-	database = $(this);
+    var parent = $(this).parent("li");
+    dbName = parent.attr("data-base");
+    database = $(this);
     if (dbName !== 'information_schema') {
-		article.hide();
-		$("#new-table").show();
-		$("#update-db").show();
-		$("#del-db").show();
-	} else {
-    	dbName = '';
-		$("#db-name").val('');
-    	$(article).hide();
-    	$("#new-db").show();
-	}
+        article.hide();
+        $("#new-table").show();
+        $("#update-db").show();
+        $("#del-db").show();
+    } else {
+        dbName = '';
+        $("#db-name").val('');
+        $(article).hide();
+        $("#new-db").show();
+    }
 });
 
 $("section").on('click','#update-db-submit',function (event){
@@ -88,7 +89,6 @@ $("section").on('click','#update-db-submit',function (event){
 
 $("section").on('click', '#confirm-db-update', function (event) {
     event.preventDefault();
-    var loadContent = $(".load-content");
     loadContent.show();
 
     $.ajax({
@@ -132,7 +132,6 @@ $("section").on('click','#delete-db-submit',function (event){
 
 $("#update-db-modal").on('click', '#confirm-db-delete', function (event) {
     event.preventDefault();
-    var loadContent = $(".load-content");
     loadContent.show();
 
     $.ajax({
@@ -201,7 +200,7 @@ $("section").on('click', '.db-name', function () {
                         var li   = document.createElement('LI');
                         var icon = '<i class="far fa-list-alt"></i>';
                         setAttributes(li, {"class": "table-name", "data-table": table, "data-base": dbName});
-                        li.innerHTML = "‐‐‐" + icon + " " + table;
+                        li.innerHTML = "‐‐‐" + icon + " " + `<span>${table}</span>`;
                         ul.append(li);
                     });
                 }
@@ -220,7 +219,6 @@ $("section").on('click', '.db-name', function () {
 });
 
 $("section").on('click', '.table-name', function () {
-    var loadContent = $(".load-content");
     tableName = $(this).attr("data-table");
     dbName = $(this).attr("data-base");
     loadContent.show();
@@ -253,6 +251,8 @@ $("section").on('click', '.table-name', function () {
                 <button class="structure-column browse" data-base="${dbName}" data-table="${tableName}">Structure</button>`;
                 var tableContent = $("#table-content");
 
+				$(".browse-str").attr("data-table", tableName);
+                $("#tblName").val(tableName);
                 $("#table-title").html(title);
                 $(tableContent).html(table);
                 article.hide();
@@ -307,7 +307,6 @@ $("#save-table").click(function (event) {
     var lengthField = getFieldValues($(".length-field"));
     var defaultField = getFieldValues($(".default-field option:selected"));
     var indexField = getFieldValues($(".index-field option:selected"));
-    var loadContent = $(".load-content");
     loadContent.show();
 
     $.ajax({
@@ -360,11 +359,12 @@ $("#save-table").click(function (event) {
                 }
                 var li   = document.createElement('LI');
                 var icon = '<i class="far fa-list-alt"></i>';
-                setAttributes(li, {"class": "table-name", "data-table": tableName, "data-base": dbName});
-                li.innerHTML = "‐‐‐" + icon + " " + tableName;
+                setAttributes(li, {"class": "table-name new-name", "data-table": tableName, "data-base": dbName});
+                li.innerHTML = "‐‐‐" + icon + " " + `<span>${tableName}</span>`;
                 tablesList.append(li);
 
                 $(".fields").remove();
+				$(".structure-column").attr("data-table", tableName);
                 tablesStructure(response.data, dbName, tableName);
             };
         }
@@ -376,7 +376,6 @@ $("#save-table").click(function (event) {
 $("section").on('click', '.structure-column', function (event) {
     event.preventDefault();
     tableName = $(this).attr("data-table");
-    var loadContent = $(".load-content");
     loadContent.show();
 
     $.ajax({
@@ -390,36 +389,79 @@ $("section").on('click', '.structure-column', function (event) {
         }
     }).done(response => {
         if (response.type === 'success') {
-			setTimeout(load, 300);
-			function load() {
-				loadContent.hide();
-				tablesStructure(response.data, dbName, tableName);
-			};
-		}
+            setTimeout(load, 300);
+            function load() {
+                loadContent.hide();
+                tablesStructure(response.data, dbName, tableName);
+            };
+        }
     }).fail(error => {
         console.log(error);
     })
 })
 
+$("section").on('click','#update-tbl-submit',function (event){
+    event.preventDefault();
+    newTblName = $("#tblName").val();
+
+    if (newTblName !== '') {
+		loadContent.show();
+        $.ajax({
+            url: 'tables/update',
+            type: 'POST',
+            async: true,
+            dataType: 'JSON',
+            data: {
+                dbName: dbName,
+                tableName: tableName,
+                newTblName: newTblName
+            }
+        }).done(response => {
+            if (response.type === 'success') {
+                setTimeout(load, 300);
+                function load() {
+                    loadContent.hide();
+					var newName = $(".new-name");
+					var li = '';
+					$.each(newName, function (k, v) {
+						if (tableName === $(v).attr("data-table")) {
+							li = $(v);
+						}
+					});
+					li.find("span").html(newTblName);
+					li.attr("data-table", newTblName);
+					$(".browse-str").attr("data-table", newTblName);
+					$(".structure-column").attr("data-table", newTblName);
+					$("#tblName").val(newTblName);
+                }
+            }
+        }).fail(error => {
+            console.log(error);
+        })
+    } else {
+        alert("required field");
+    }
+});
+
 function tablesStructure(fields, db, table) {
-	$(".field-data").remove();
-	$.each(fields, function (key, val) {
-		var tr = document.createElement('TR');
-		setAttributes(tr, {"class": "field-data"});
-		$('.table-structure').append(tr);
-		$.each(val, function (k, v) {
-			var td = document.createElement('TH');
-			td.innerHTML = v;
-			tr.append(td)
-		})
-	});
+    $(".field-data").remove();
+    $.each(fields, function (key, val) {
+        var tr = document.createElement('TR');
+        setAttributes(tr, {"class": "field-data"});
+        $('.table-structure').append(tr);
+        $.each(val, function (k, v) {
+            var td = document.createElement('TH');
+            td.innerHTML = v;
+            tr.append(td)
+        })
+    });
 
-	var brows = `<button class="table-name browse-str browse" data-base="${db}" data-table="${table}">`+
-		`Browse</button><button class="structure-str browse">Structure</button>`;
-	$("#structure-title").html(brows);
+    var brows = `<button class="table-name browse-str browse" data-base="${db}" data-table="${table}">`+
+        `Browse</button><button class="structure-str browse">Structure</button>`;
+    $("#structure-title").html(brows);
 
-	article.hide();
-	$("#table-structure").show();
+    article.hide();
+    $("#table-structure").show();
 }
 
 function newTable() {
