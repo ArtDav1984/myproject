@@ -13,17 +13,17 @@
 <section>
 
     <div id="aside">
-        <h1><span>php</span>MyAdmin</h1>
+        <h1><em><span>php</span>MyAdmin</em></h1>
 
         <ul class="databases">
 
             <div class="vertical-line">
                 <li class="create-db"><span class="horizontal-line">--</span><i class="fas fa-database"></i>
-                    <span id="create-db">Create Database</span>
+                    <span id="create-db">New</span>
                 </li>
             </div>
             
-            <?php if ($databases) : ?>
+            <?php if (!is_null($databases)) : ?>
 				
             <?php foreach ($databases as $database => $item) : ?>
                 
@@ -33,7 +33,7 @@
                         <i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i><span class="horizontal-line">-</span><i class="fas fa-database"></i>
                         <span class="db-name database"><?= $item['Database']; ?></span>
                         <div class="hide-line">
-                            <ul class="tables-list"> </ul>
+                            <ul class="tables-list" data-base="<?= $item['Database']; ?>"> </ul>
                         </div>
                     </li>
                 </div>

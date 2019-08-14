@@ -23,16 +23,16 @@
 			}
 		}
 		
-		public function column()
+		public function field()
 		{
 			if ($this->input->is_ajax_request()){
 				$table_name = $this->input->get_request_header('table');
 				$db_name    = $this->input->get_request_header('dbName');
 				
 				if ($table_name && $db_name) {
-					$columns = $this->TableName->getTablesColumn($table_name, $db_name);
-					if (!is_null($columns)) {
-						echo json_encode(['data' => $columns, 'type' => 'success']);
+					$fields = $this->TableName->getTablesFields($table_name, $db_name);
+					if (!is_null($fields)) {
+						echo json_encode(['data' => $fields, 'type' => 'success']);
 					} else {
 						echo json_encode(['type' => 'fail']);
 					}
@@ -88,6 +88,20 @@
 				
 				if (isset($newTable_name) && isset($table_name)) {
 					if ($this->TableName->updateTable($db_name, $table_name, $newTable_name)){
+						echo json_encode(['type' => 'success']);
+					}
+				}
+			}
+		}
+		
+		public function delete()
+		{
+			if ($this->input->is_ajax_request()) {
+				$db_name = $this->input->post('dbName');
+				$table_name = $this->input->post('tableName');
+				
+				if(isset($db_name) && isset($table_name)) {
+					if ($this->TableName->deleteTable($db_name, $table_name)){
 						echo json_encode(['type' => 'success']);
 					}
 				}

@@ -12,27 +12,24 @@
 		
 		public  function getDatabasesNames()
 		{
-			$query = "SHOW DATABASES";
-			if ($this->db->query($query)) {
-				return $this->db->query($query)->result_array();
+			$databases = $this->db->query("SHOW DATABASES")->result_array();
+			if ($databases === []) {
+				return null;
 			}
-			return false;
+			return $databases;
 		}
 		
 		public function getCharacterSet()
 		{
-			$query = "SHOW CHARACTER SET";
 			$charsArr = [];
-			if ($this->db->query($query)) {
-				$chars = $this->db->query($query)->result_array();
-				foreach ($chars as $char => $row) {
-					$charsArr[] = $row['Default collation'];
-				}
-				if ($charsArr === []) {
-					return null;
-				}
-				return $charsArr;
+			$chars = $this->db->query("SHOW CHARACTER SET")->result_array();
+			foreach ($chars as $char => $row) {
+				$charsArr[] = $row['Default collation'];
 			}
+			if ($charsArr === []) {
+				return null;
+			}
+			return $charsArr;
 		}
 		
 		public function createDatabase($db_name, $char_name)

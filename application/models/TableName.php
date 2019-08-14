@@ -10,37 +10,26 @@
 		
 		public function getTablesName($db_name, $check = false)
 		{
-			$query = "SHOW TABLES FROM $db_name";
 			$table_names = [];
-			if ($this->db->query($query)) {
-				$tables = $this->db->query($query)->result_array();
-				foreach ($tables as $key => $val) {
-					$table_names[] = $val["Tables_in_{$db_name}"];
-				}
-				if ($table_names === [] && $check === false) {
-					return null;
-				}
-				return $table_names;
+			$tables = $this->db->query("SHOW TABLES FROM $db_name")->result_array();
+			foreach ($tables as $key => $val) {
+				$table_names[] = $val["Tables_in_{$db_name}"];
 			}
+			if ($table_names === [] && $check === false) {
+				return null;
+			}
+			return $table_names;
+			
 		}
 		
-		public function getTablesColumn($table_name, $db_name)
+		public function getTablesFields($table_name, $db_name)
 		{
-			$query = "SELECT `COLUMN_NAME`
-                              FROM `INFORMATION_SCHEMA`.`COLUMNS`
-                              WHERE `TABLE_SCHEMA`='$db_name'
-                              AND `TABLE_NAME`='$table_name';";
-			$column_names = [];
-			if ($this->db->query($query)) {
-				$columns = $this->db->query($query)->result_array();
-				foreach ($columns as $key => $val) {
-					$column_names[] = $val['COLUMN_NAME'];
-				}
-				if ($column_names === []) {
-					return null;
-				}
-				return $column_names;
+			$this->db->query("USE $db_name");
+			$fields = $this->db->list_fields($table_name);
+			if ($fields === []) {
+				return null;
 			}
+			return $fields;
 		}
 		
 		public function createTable($db_name, $table_name, $number_column, $data_fields)
@@ -86,17 +75,22 @@
 			return false;
 		}
 		
+		public function deleteTable($db_name, $table_name)
+		{
+			$this->db->query("USE $db_name");
+			if ($this->dbforge->drop_table($table_name, TRUE)) {
+				return true;
+			}
+			return false;
+		}
+		
 		public function getTableStructure($db_name, $table_name)
 		{
-			$structure = array();
 			$this->db->query("USE $db_name");
 			$fields = $this->db->field_data($table_name);
-			foreach ($fields as $field) {
-				$structure[] = $field;
-			}
-			if ($structure === []) {
+			if ($fields === []) {
 				return null;
 			}
-			return $structure;
+			return $fields;
 		}
 	}
