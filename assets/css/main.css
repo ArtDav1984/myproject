@@ -1,21 +1,21 @@
 @font-face {
-	font-family: 'Roboto-Regular';
-	src: url('../font/Roboto-Regular.eot?#iefix')
-	format('embedded-opentype'),
-	url('../font/Roboto-Regular.woff') format('woff'),
-	url('../font/Roboto-Regular.ttf')  format('truetype'),
-	url('../font/Roboto-Regular.svg#Roboto-Regular')
-	format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
-body {
-	font-family: 'Roboto-Regular';
+    font-family: 'Roboto-Regular';
+    src: url('../font/Roboto-Regular.eot?#iefix')
+    format('embedded-opentype'),
+    url('../font/Roboto-Regular.woff') format('woff'),
+    url('../font/Roboto-Regular.ttf')  format('truetype'),
+    url('../font/Roboto-Regular.svg#Roboto-Regular')
+    format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+body {
+    font-family: 'Roboto-Regular';
 }
 section {
     display: flex;
@@ -26,6 +26,7 @@ section {
     width: 17%;
     height: 760px;
     overflow-y: auto;
+    overflow-x: hidden;
     background-color: #f4f5fd;
     border-right: 3px solid #9ca1aa;
 }
@@ -34,7 +35,7 @@ ul {
 }
 #aside h1 {
     color: #f0ad4e;
-	text-align: center;
+    text-align: center;
 }
 #aside h1 span {
     color: #86c3ff;
@@ -124,9 +125,9 @@ ul {
     margin-top: 20px;
 }
 .databases .vertical-line {
-	border-left: 1px solid #848696;
-	margin-left: 10px;
-	padding-bottom: 5px;
+    border-left: 1px solid #848696;
+    margin-left: 10px;
+    padding-bottom: 5px;
     width: 350px;
 }
 .databases .vertical-line:last-child {
@@ -143,6 +144,9 @@ td, th {
 th {
     border-right: 1px solid #fff;
     border-left: 1px solid #fff;
+}
+tr:hover, tr:nth-child(odd):hover {
+	background-color: #b0b7c8 !important;
 }
 tr:nth-child(odd) {
     background-color: #dddddd !important;
@@ -232,23 +236,26 @@ legend {
 }
 #delete-db-submit,
 #delete-tbl-submit,
+#empty-tbl-submit,
 .fa-calendar-times {
     color: red;
 }
 #delete-db-submit,
-#delete-tbl-submit {
+#delete-tbl-submit,
+#empty-tbl-submit {
     background-color: transparent;
     border: none;
     outline: none;
     cursor: pointer;
 }
 #delete-db-submit:hover,
-#delete-tbl-submit:hover {
+#delete-tbl-submit:hover,
+#empty-tbl-submit:hover {
     text-decoration: underline;
     color: #fff;
     background-color: red;
 }
-#update-db-modal {
+#modal {
     width: 300px;
     border: 1px solid #848696;
     border-radius: 3px;
@@ -293,7 +300,7 @@ legend {
 #modal-footer {
     padding: 10px 15px 15px;
 }
-.confirm-db, .cancel-db-update {
+.confirm-db, .cancel-modal {
     width: 40px;
     height: 30px;
     margin-left: 130px;
@@ -301,10 +308,10 @@ legend {
     border: 1px solid #848696;
     cursor: pointer;
 }
-.confirm-db-update:hover, .cancel-db-update:hover {
+.confirm-db-update:hover, .cancel-modal:hover {
     background-color: #f4f5fd;
 }
-.cancel-db-update {
+.cancel-modal {
     width: 80px;
     margin-left: 5px;
 }
@@ -373,4 +380,36 @@ legend {
     background-color: transparent;
     border: none;
     outline: none;
+}
+#response-modal {
+    width: 380px;
+    height: 80px;
+    background-color: yellow;
+    border-radius: 5px;
+    position: fixed;
+    z-index: 3;
+    left: 40%;
+    top: 250px;
+    display: none;
+}
+#m-body {
+    width: 97%;
+    height: 60px;
+    margin: 10px auto;
+    border: 1px solid #caf9ee;
+    border-radius: 5px;
+    background-color: #edfdf9;
+    padding: 10px;
+}
+#m-body p {
+    text-align: center;
+}
+.del-field {
+    cursor: pointer;
+}
+.del-field:hover {
+    text-decoration: underline;
+}
+.fa-minus-circle {
+    color: red;
 }

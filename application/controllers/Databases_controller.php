@@ -2,18 +2,18 @@
 	
 	defined('BASEPATH') OR exit('No direct script access allowed');
 	
-	class Databases extends CI_Controller
+	class Databases_controller extends CI_Controller
 	{
 		public function __construct()
 		{
 			parent::__construct();
-			$this->load->model('DbName');
+			$this->load->model('Databases');
 		}
 		
 		public function index()
 		{
-			$databases = $this->DbName->getDatabasesNames();
-			$chars = $this->DbName->getCharacterSet();
+			$databases = $this->Databases->getDatabasesNames();
+			$chars = $this->Databases->getCharacterSet();
 			$this->load->view('welcome_message', compact('databases', 'chars'));
 		}
 		
@@ -23,7 +23,7 @@
 				$db_name   = $this->input->post('name');
 				$char_name = $this->input->post('charsets');
 				if (isset($db_name) && isset($char_name)) {
-					$database = $this->DbName->createDatabase($db_name, $char_name);
+					$database = $this->Databases->createDatabase($db_name, $char_name);
 					if (!is_null($database)) {
 						echo json_encode(['data' => $database, 'type' => 'success']);
 					} else {
@@ -40,7 +40,7 @@
 				$current_db_name = $this->input->post('dbName');
 				
 				if(isset($new_db_name) && isset($current_db_name)) {
-					$database = $this->DbName->updateDatabase($new_db_name, $current_db_name);
+					$database = $this->Databases->updateDatabase($new_db_name, $current_db_name);
 					if (!is_null($database)) {
 						echo json_encode(['data' => $database, 'type' => 'success']);
 					} else {
@@ -56,7 +56,7 @@
 				$db_name = $this->input->post('dbName');
 				
 				if(isset($db_name)) {
-					if ($this->DbName->deleteDatabase($db_name)){
+					if ($this->Databases->deleteDatabase($db_name)){
 						echo json_encode(['type' => 'success']);
 					}
 				}

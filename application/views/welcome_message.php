@@ -125,6 +125,7 @@
                 <form method="post">
                     <fieldset>
                         <legend><i class="far fa-calendar-times"></i> Remove table</legend>
+                        <button id="empty-tbl-submit">Empty the table (TRUNCATE)</button> <br>
                         <button id="delete-tbl-submit">Delete the table (DROP)</button>
                     </fieldset>
                 </form>
@@ -168,19 +169,29 @@
         </div>
     </div>
 
-    <div id="update-db-modal">
+    <div id="modal">
         <div id="modal-header">
             <h5>Confirm</h5>
             <button type="button" class="cancel-db-update close">&times;</button>
         </div>
         <div id="modal-body">
-            <p>CREATE DATABASE myproject / DROP DATABASE project</p>
+            <p>
+            
+            </p>
         </div>
         <div id="modal-footer">
             <form method="post" id="update-db-form">
                 <button type="submit" class="confirm-db">OK</button>
-                <button type="button"  class="cancel-db-update">Cancel</button>
+                <button type="button"  class="cancel-modal">Cancel</button>
             </form>
+        </div>
+    </div>
+    
+    <div id="response-modal">
+        <div id="m-body">
+           <p>
+           
+           </p>
         </div>
     </div>
 

@@ -1,6 +1,8 @@
 <?php
-	
-	class TableName extends CI_Model
+
+    defined('BASEPATH') OR exit('No direct script access allowed');
+
+	class Tables extends CI_Model
 	{
 		public function __construct()
 		{
@@ -20,16 +22,6 @@
 			}
 			return $table_names;
 			
-		}
-		
-		public function getTablesFields($table_name, $db_name)
-		{
-			$this->db->query("USE $db_name");
-			$fields = $this->db->list_fields($table_name);
-			if ($fields === []) {
-				return null;
-			}
-			return $fields;
 		}
 		
 		public function createTable($db_name, $table_name, $number_column, $data_fields)
@@ -79,6 +71,15 @@
 		{
 			$this->db->query("USE $db_name");
 			if ($this->dbforge->drop_table($table_name, TRUE)) {
+				return true;
+			}
+			return false;
+		}
+		
+		public function truncateTable($db_name, $table_name)
+		{
+			$this->db->query("USE $db_name");
+			if ($this->db->truncate($table_name)){
 				return true;
 			}
 			return false;

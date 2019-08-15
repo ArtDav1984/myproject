@@ -45,6 +45,7 @@ $("section").on('click', '#db-submit',function (event) {
                         `<span class="db-name database">&nbsp;${response.data}</span>` +
                         `<div class="hide-line"> <ul class="tables-list" data-base="${response.data}"> </ul> </div> </li> </div>`;
                     $(".databases").append(newDbLine);
+                    modalToggle(`Database '${response.data}' has been created`);
                 }
             }
         }).fail(error => {
@@ -77,8 +78,8 @@ $("section").on('click','#update-db-submit',function (event){
     newDbName = $("#dbName").val();
 
     if (newDbName !== '') {
-        $("#update-db-modal").show();
-        $("#update-db-modal > #modal-body > p").html(`CREATE DATABASE ${newDbName} / DROP DATABASE ${dbName}`);
+        $("#modal").show();
+        $("#modal > #modal-body > p").html(`CREATE DATABASE ${newDbName} / DROP DATABASE ${dbName}`);
         var button = $(".confirm-db");
         $(button).attr("id", "confirm-db-update");
     } else {
@@ -89,7 +90,7 @@ $("section").on('click','#update-db-submit',function (event){
 $("section").on('click', '#confirm-db-update', function (event) {
     event.preventDefault();
     loadContent.show();
-	$("#dbName").val('');
+    $("#dbName").val('');
 
     $.ajax({
         url: 'databases/update',
@@ -102,23 +103,25 @@ $("section").on('click', '#confirm-db-update', function (event) {
         }
     }).done(response => {
         if (response.type === 'success') {
-            dbName = response.data;
-            $("#update-db-modal").hide();
+            $("#modal").hide();
             setTimeout(load, 300);
             function load() {
                 loadContent.hide();
                 database.html(` ${response.data}`);
                 var li = database.parent('li');
+                li.removeAttr("data-base");
+                li.attr("data-base", response.data);
                 var newTable = $(li).find('div').find('ul').find('.new-table');
                 var tableName = $(li).find('div').find('ul').find('.table-name');
                 var tablesList = $(li).find('div').find('ul');
-				li.attr("data-base", response.data);
                 $(newTable).attr("data-base", response.data);
                 $(tableName).attr("data-base", response.data);
                 $(tablesList).attr("data-base", response.data);
                 $(tableName).attr("class", "table-name new-name");
                 article.hide();
                 $("#new-table").show();
+                modalToggle(`Database '${dbName}' has been renamed`);
+				dbName = response.data;
             }
         }
     }).fail(error => {
@@ -129,13 +132,13 @@ $("section").on('click', '#confirm-db-update', function (event) {
 $("section").on('click','#delete-db-submit',function (event){
     event.preventDefault();
 
-    $("#update-db-modal").show();
-    $("#update-db-modal > #modal-body > p").html(`You are about to DESTROY a complete database! Do you really want to execute "DROP DATABASE ${dbName}"?`);
+    $("#modal").show();
+    $("#modal > #modal-body > p").html(`You are about to DESTROY a complete database! Do you really want to execute "DROP DATABASE ${dbName}"?`);
     var button = $(".confirm-db");
     $(button).attr("id", "confirm-db-delete");
 });
 
-$("#update-db-modal").on('click', '#confirm-db-delete', function (event) {
+$("section").on('click', '#confirm-db-delete', function (event) {
     event.preventDefault();
     loadContent.show();
 
@@ -149,7 +152,7 @@ $("#update-db-modal").on('click', '#confirm-db-delete', function (event) {
         }
     }).done(response => {
         if (response.type === 'success') {
-            $("#update-db-modal").hide();
+            $("#modal").hide();
             setTimeout(load, 300);
             function load() {
                 loadContent.hide();
@@ -158,6 +161,7 @@ $("#update-db-modal").on('click', '#confirm-db-delete', function (event) {
                 article.hide();
                 $("#new-db").show();
                 $("#db-name").val('');
+                modalToggle('MySQl returned an empty result set (i.e. 0 rows).');
             }
         }
     }).fail(error => {
@@ -165,8 +169,8 @@ $("#update-db-modal").on('click', '#confirm-db-delete', function (event) {
     })
 });
 
-$(".cancel-db-update").click(function () {
-    $("#update-db-modal").hide()
+$(".cancel-modal").click(function () {
+    $("#modal").hide()
 });
 
 $("section").on('click', '.db-name', function () {
@@ -221,52 +225,6 @@ $("section").on('click', '.db-name', function () {
     }
 
     parent.attr('aria-expanded', 'true');
-});
-
-$("section").on('click', '.table-name', function () {
-    tableName = $(this).attr("data-table");
-    dbName = $(this).attr("data-base");
-    loadContent.show();
-
-    $.ajax({
-        url     : 'tables/field',
-        type    : 'GET',
-        async   : true,
-        dataType: "JSON",
-        headers    : {
-            table: tableName,
-            dbName: dbName
-        }
-    }).done(response => {
-        if (response.type === 'success') {
-            setTimeout(load, 300);
-            function load() {
-                loadContent.hide();
-                var table = document.createElement('TABLE');
-                var tr    = document.createElement('TR');
-                table.append(tr);
-                $(window).scrollTop(0);
-                response.data.forEach(function (field) {
-                    var th       = document.createElement('TH');
-                    th.innerHTML = field;
-                    tr.append(th)
-                });
-
-                var title = ` <button class="browse-column browse">Browse</button>
-                <button class="structure-column browse" data-base="${dbName}" data-table="${tableName}">Structure</button>`;
-                var tableContent = $("#table-content");
-
-                $(".browse-str").attr("data-table", tableName);
-                $("#tblName").val(tableName);
-                $("#table-title").html(title);
-                $(tableContent).html(table);
-                article.hide();
-                $("#table-columns").show();
-            }
-        }
-    }).fail(error => {
-        console.log(error);
-    })
 });
 
 $("section").on('click', '.new-table', function () {
@@ -371,6 +329,7 @@ $("#save-table").click(function (event) {
                 $(".fields").remove();
                 $(".structure-column").attr("data-table", tableName);
                 tablesStructure(response.data, dbName, tableName);
+                modalToggle(`Table '${tableName}' has been created`);
             };
         }
     }).fail(error => {
@@ -438,6 +397,7 @@ $("section").on('click','#update-tbl-submit',function (event){
                     $(".browse-str").attr("data-table", newTblName);
                     $(".structure-column").attr("data-table", newTblName);
                     $("#tblName").val(newTblName);
+                    modalToggle(`Table '${tableName}' has been renamed`);
                     tableName = newTblName;
                 }
             }
@@ -452,14 +412,24 @@ $("section").on('click','#update-tbl-submit',function (event){
 $("section").on('click','#delete-tbl-submit',function (event){
     event.preventDefault();
 
-    $("#update-db-modal").show();
-    $("#update-db-modal > #modal-body > p").html(`You are about to DESTROY a complete table! 
+    $("#modal").show();
+    $("#modal > #modal-body > p").html(`You are about to DESTROY a complete table! 
                                   Do you really want to execute "DROP TABLE ${tableName}"?`);
     var button = $(".confirm-db");
     $(button).attr("id", "confirm-tbl-delete");
 });
 
-$("#update-db-modal").on('click', '#confirm-tbl-delete', function (event) {
+$("section").on('click','#empty-tbl-submit',function (event){
+    event.preventDefault();
+
+    $("#modal").show();
+    $("#modal > #modal-body > p").html(`You are about to TRUNCATE a complete table!
+     Do you really want to execute TRUNCATE '${dbName}'.'${tableName}'?`);
+    var button = $(".confirm-db");
+    $(button).attr("id", "confirm-tbl-empty");
+});
+
+$("section").on('click', '#confirm-tbl-delete', function (event) {
     event.preventDefault();
     loadContent.show();
 
@@ -474,7 +444,7 @@ $("#update-db-modal").on('click', '#confirm-tbl-delete', function (event) {
         }
     }).done(response => {
         if (response.type === 'success') {
-            $("#update-db-modal").hide();
+            $("#modal").hide();
             setTimeout(load, 300);
             function load() {
                 loadContent.hide();
@@ -491,7 +461,7 @@ $("#update-db-modal").on('click', '#confirm-tbl-delete', function (event) {
                     if (dbName === $(v).attr('data-base')) {
                         tablesList = $(v);
                     }
-                })
+                });
                 table.remove();
                 if ($(tablesList).find('*').length <= 2) {
                     var newTbl = $(".new-table");
@@ -500,12 +470,113 @@ $("#update-db-modal").on('click', '#confirm-tbl-delete', function (event) {
                 article.hide();
                 $("#new-table").show();
                 $("#tableName").val('');
+                modalToggle('MySQl returned an empty result set (i.e. 0 rows).');
             }
         }
     }).fail(error => {
         console.log(error)
     })
 });
+
+$("section").on('click', '#confirm-tbl-empty', function (event) {
+    event.preventDefault();
+    loadContent.show();
+
+    $.ajax({
+        url: 'tables/truncate',
+        type: 'POST',
+        async: true,
+        dataType: "JSON",
+        data: {
+            dbName: dbName,
+            tableName: tableName
+        }
+    }).done(response => {
+        if (response.type === 'success') {
+            $("#modal").hide();
+            setTimeout(load, 300);
+            function load() {
+                loadContent.hide();
+				$(".table-fields").remove();
+                modalToggle('MySQl returned an empty result set (i.e. 0 rows).');
+            }
+        }
+    }).fail(error => {
+        console.log(error)
+    })
+});
+
+$("section").on('click', '.table-name', function () {
+	tableName = $(this).attr("data-table");
+	dbName = $(this).attr("data-base");
+	loadContent.show();
+
+	$.ajax({
+		url     : 'fields',
+		type    : 'GET',
+		async   : true,
+		dataType: "JSON",
+		headers    : {
+			table: tableName,
+			dbName: dbName
+		}
+	}).done(response => {
+		if (response.type === 'success') {
+			setTimeout(load, 300);
+			function load() {
+				loadContent.hide();
+				$(window).scrollTop(0);
+				var table    = document.createElement('TABLE');
+				var thDel       = document.createElement('TH');
+				var tHead    = document.createElement('TR');
+				thDel.innerHTML = '';
+				tHead.append(thDel);
+				table.append(tHead);
+				response.column.forEach(function (col) {
+					var th       = document.createElement('TH');
+					th.innerHTML = col;
+					tHead.append(th)
+				});
+
+				$.each(response.field, function (key, val) {
+					var tBody = document.createElement('TR');
+					var trDel = document.createElement('TD');
+					setAttributes(tBody, {"class": "table-fields", "data-base": dbName, "data-table": tableName});
+					trDel.innerHTML = `<p class="del-field" data-base="${dbName}" data-table="${tableName}">` +
+						'<i class="fas fa-minus-circle"></i> Delete</p>';
+					table.append(tBody);
+					tBody.append(trDel);
+					$.each(val, function (k, v) {
+						var td = document.createElement('TD');
+						td.innerHTML = v;
+						tBody.append(td);
+					})
+				});
+
+				var title = ` <button class="browse-column browse">Browse</button>
+                <button class="structure-column browse" data-base="${dbName}" data-table="${tableName}">Structure</button>`;
+				var tableContent = $("#table-content");
+
+				$(".browse-str").attr("data-table", tableName);
+				$("#tblName").val(tableName);
+				$("#table-title").html(title);
+				$(tableContent).html(table);
+				article.hide();
+				if (dbName === 'information_schema') {
+					$("#update-table").hide();
+					$("#del-table").hide();
+				} else {
+					$("#update-table").show();
+					$("#del-table").show();
+				}
+				$("#table-columns").show();
+			}
+		}
+	}).fail(error => {
+		console.log(error);
+	})
+});
+
 
 function tablesStructure(fields, db, table) {
     $(".field-data").remove();
@@ -526,6 +597,15 @@ function tablesStructure(fields, db, table) {
 
     article.hide();
     $("#table-structure").show();
+}
+
+function modalToggle(data) {
+    $("#response-modal").show();
+    $("#m-body > p").html(data);
+    setTimeout(closeModal, 2000);
+    function closeModal() {
+        $("#response-modal").hide();
+    }
 }
 
 function newTable() {

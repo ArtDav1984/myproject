@@ -1,13 +1,13 @@
 <?php
 	defined('BASEPATH') OR exit('No direct script access allowed');
 	
-	class DbName extends CI_Model
+	class Databases extends CI_Model
 	{
 		public function __construct()
 		{
 			parent::__construct();
 			$this->load->dbforge();
-			$this->load->model('TableName');
+			$this->load->model('Tables');
 		}
 		
 		public  function getDatabasesNames()
@@ -42,7 +42,7 @@
 		
 		public function updateDatabase($new_db_name, $current_db_name)
 		{
-			$tables = $this->TableName->getTablesName($current_db_name, true);
+			$tables = $this->Tables->getTablesName($current_db_name, true);
 			if ($this->dbforge->create_database($new_db_name, TRUE)) {
 				foreach ($tables as $table) {
 					$this->db->query("RENAME TABLE $current_db_name.$table TO $new_db_name.$table");
