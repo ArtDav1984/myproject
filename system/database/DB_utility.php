@@ -326,19 +326,19 @@ abstract class CI_DB_utility {
 		// name, which is a valid short cut.
 		if (is_string($params))
 		{
-			$params = array('tables' => $params);
+			$params = array('TablesController' => $params);
 		}
 
 		// Set up our default preferences
 		$prefs = array(
-			'tables'		=> array(),
-			'ignore'		=> array(),
-			'filename'		=> '',
-			'format'		=> 'gzip', // gzip, zip, txt
-			'add_drop'		=> TRUE,
-			'add_insert'		=> TRUE,
-			'newline'		=> "\n",
-			'foreign_key_checks'	=> TRUE
+			'TablesController'   => array(),
+			'ignore'             => array(),
+			'filename'           => '',
+			'format'             => 'gzip', // gzip, zip, txt
+			'add_drop'           => TRUE,
+			'add_insert'         => TRUE,
+			'newline'            => "\n",
+			'foreign_key_checks' => TRUE
 		);
 
 		// Did the user submit any preferences? If so set them....
@@ -355,9 +355,9 @@ abstract class CI_DB_utility {
 
 		// Are we backing up a complete database or individual tables?
 		// If no table names were submitted we'll fetch the entire table list
-		if (count($prefs['tables']) === 0)
+		if (count($prefs['TablesController']) === 0)
 		{
-			$prefs['tables'] = $this->db->list_tables();
+			$prefs['TablesController'] = $this->db->list_tables();
 		}
 
 		// Validate the format
@@ -385,7 +385,7 @@ abstract class CI_DB_utility {
 			// Set the filename if not provided (only needed with Zip files)
 			if ($prefs['filename'] === '')
 			{
-				$prefs['filename'] = (count($prefs['tables']) === 1 ? $prefs['tables'] : $this->db->database)
+				$prefs['filename'] = (count($prefs['TablesController']) === 1 ? $prefs['TablesController'] : $this->db->database)
 							.date('Y-m-d_H-i', time()).'.sql';
 			}
 			else

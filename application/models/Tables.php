@@ -1,7 +1,7 @@
 <?php
-
-    defined('BASEPATH') OR exit('No direct script access allowed');
-
+	
+	defined('BASEPATH') OR exit('No direct script access allowed');
+	
 	class Tables extends CI_Model
 	{
 		public function __construct()

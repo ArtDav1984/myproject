@@ -146,7 +146,7 @@ th {
     border-left: 1px solid #fff;
 }
 tr:hover, tr:nth-child(odd):hover {
-	background-color: #b0b7c8 !important;
+    background-color: #b0b7c8 !important;
 }
 tr:nth-child(odd) {
     background-color: #dddddd !important;
@@ -356,27 +356,17 @@ legend {
 .fields {
     height: 60px;
 }
-#table-structure, #table-columns {
-    padding-top: 20px;
+.tables-content-article {
+	display: none;
 }
-#table-structure {
-    padding: 20px;
+#tables-content {
+	padding: 20px;
 }
-#table-title,
-#table-content {
-    padding-left: 20px;
+.open-table {
+    padding: 10px 5px;
+	cursor: pointer;
 }
-.browse {
-    width: 200px;
-    height: 30px;
-}
-.browse:last-child {
-    margin-left: 20px;
-}
-.structure-column {
-    cursor: pointer;
-}
-.browse-column, .structure-str {
+.active {
     background-color: transparent;
     border: none;
     outline: none;

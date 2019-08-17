@@ -1,5 +1,7 @@
 <?php
 	
+	defined('BASEPATH') OR exit('No direct script access allowed');
+	
 	class Tables_controller extends CI_Controller
 	{
 		public function __construct()
@@ -63,8 +65,8 @@
 		public function delete()
 		{
 			if ($this->input->is_ajax_request()) {
-				$db_name = $this->input->post('dbName');
-				$table_name = $this->input->post('tableName');
+				$db_name = $this->input->get_request_header('dbName');
+				$table_name = $this->input->get_request_header('tableName');
 				
 				if(isset($db_name) && isset($table_name)) {
 					if ($this->Tables->deleteTable($db_name, $table_name)){
@@ -77,8 +79,8 @@
 		public function truncate()
 		{
 			if ($this->input->is_ajax_request()) {
-				$db_name = $this->input->post('dbName');
-				$table_name = $this->input->post('tableName');
+				$db_name = $this->input->get_request_header('dbName');
+				$table_name = $this->input->get_request_header('tableName');
 				
 				if(isset($db_name) && isset($table_name)) {
 					if ($this->Tables->truncateTable($db_name, $table_name)){
@@ -87,13 +89,11 @@
 				}
 			}
 		}
-
 		public function structure()
 		{
 			if ($this->input->is_ajax_request()){
 				$db_name = $this->input->get_request_header('dbName');
 				$table_name = $this->input->get_request_header('tableName');
-
 				if ($db_name && $table_name) {
 					$fields = $this->Tables->getTableStructure($db_name, $table_name);
 					if (!is_null($fields)){

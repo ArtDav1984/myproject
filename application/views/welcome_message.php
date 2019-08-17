@@ -102,77 +102,86 @@
             </form>
         </div>
 
-        <div id="table-columns" class="article">
-            <div id="table-title">
-            
-            </div>
-            <div id="table-content">
-            
-            </div>
+		<div id="tables-content" class="article">
 
-            <div id="update-table">
-                <form method="post">
-                    <fieldset>
-                        <legend><i class="fas fa-pencil-alt"></i> Rename table to</legend>
-                        <input type="text" name="tableName" id="tblName"/>
-                        <br /><br />
-                        <button type="submit" id="update-tbl-submit">Go</button>
-                    </fieldset>
-                </form>
-            </div>
+			<div id="tables-nav">
+				<button id="open-table-browse" class="open-table">Browse</button>
+				<button id="open-table-structure" class="open-table">Structure</button>
+				<button id="open-table-insert" class="open-table">Insert</button>
+				<button id="open-table-operations" class="open-table">Operations</button>
+			</div>
 
-            <div id="del-table">
-                <form method="post">
-                    <fieldset>
-                        <legend><i class="far fa-calendar-times"></i> Remove table</legend>
-                        <button id="empty-tbl-submit">Empty the table (TRUNCATE)</button> <br>
-                        <button id="delete-tbl-submit">Delete the table (DROP)</button>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
-        
-        <div id="table-structure" class="article">
-            <div id="structure-title">
-            
-            </div>
-            <table class="table-structure">
-                <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Max-length</th>
-                    <th>Default</th>
-                    <th>Primary-key</th>
-                </tr>
-            </table>
-        </div>
+			<div id="table-browse" class="tables-content-article">
 
-        <div id="table" class="article">
-            <form method="post">
-                Table name: <input type="text" id="update-name">
-                Add: <input type="number" id="update-number" value="1">
-                <button type="submit" id="add-submit">Go</button>
-                <div class="line"></div>
-                <table class="table">
-                    <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Length/Values</th>
-                        <th>Default</th>
-                        <th>Index</th>
-                    </tr>
-                </table>
-                <div id="bot-line">
-                    <button type="submit" id="save-table">Save</button>
+			</div>
+
+			<div id="table-structure" class="tables-content-article">
+				<table class="table-structure">
+					<tr>
+						<th>Name</th>
+						<th>Type</th>
+						<th>Max-length</th>
+						<th>Default</th>
+						<th>Primary-key</th>
+					</tr>
+				</table>
+			</div>
+
+			<div id="table-insert" class="tables-content-article">
+				<p>insert</p>
+			</div>
+
+			<div id="table-operations" class="tables-content-article">
+			    <div id="update-table">
+                    <form method="post">
+                        <fieldset>
+                            <legend><i class="fas fa-pencil-alt"></i> Rename table to</legend>
+                            <input type="text" name="tableName" id="tblName"/>
+                            <br /><br />
+                            <button type="submit" id="update-tbl-submit">Go</button>
+                        </fieldset>
+                    </form>
                 </div>
-            </form>
-        </div>
+
+                <div id="del-table">
+                    <form method="post">
+                        <fieldset>
+                            <legend><i class="far fa-calendar-times"></i> Remove table</legend>
+                            <button id="empty-tbl-submit">Empty the table (TRUNCATE)</button> <br>
+                            <button id="delete-tbl-submit">Delete the table (DROP)</button>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+		</div>
+
+            <div id="table" class="article">
+                <form method="post">
+                    Table name: <input type="text" id="update-name">
+                    Add: <input type="number" id="update-number" value="1">
+                    <button type="submit" id="add-submit">Go</button>
+                    <div class="line"></div>
+                    <table class="table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Length/Values</th>
+                            <th>Default</th>
+                            <th>Index</th>
+                        </tr>
+                    </table>
+                    <div id="bot-line">
+                        <button type="submit" id="save-table">Save</button>
+                    </div>
+                </form>
+            </div>
+		</div>
     </div>
 
     <div id="modal">
         <div id="modal-header">
             <h5>Confirm</h5>
-            <button type="button" class="cancel-db-update close">&times;</button>
+            <button type="button" class="cancel-db-update cancel-modal close">&times;</button>
         </div>
         <div id="modal-body">
             <p>

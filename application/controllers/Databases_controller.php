@@ -53,11 +53,13 @@
 		public function delete()
 		{
 			if ($this->input->is_ajax_request()) {
-				$db_name = $this->input->post('dbName');
+				$db_name = $this->input->get_request_header('dbName');
 				
 				if(isset($db_name)) {
 					if ($this->Databases->deleteDatabase($db_name)){
 						echo json_encode(['type' => 'success']);
+					} else {
+						echo json_encode(['type' => 'fail']);
 					}
 				}
 			}

@@ -3,6 +3,8 @@ var dbName = '';
 var newDbName = '';
 var tableName = '';
 var newTblName = '';
+var deleteField = '';
+var id = '';
 var numberColumn;
 var article = $(".article");
 var loadContent = $(".load-content");
@@ -78,10 +80,7 @@ $("section").on('click','#update-db-submit',function (event){
     newDbName = $("#dbName").val();
 
     if (newDbName !== '') {
-        $("#modal").show();
-        $("#modal > #modal-body > p").html(`CREATE DATABASE ${newDbName} / DROP DATABASE ${dbName}`);
-        var button = $(".confirm-db");
-        $(button).attr("id", "confirm-db-update");
+        openModal(`CREATE DATABASE ${newDbName} / DROP DATABASE ${dbName}`, "confirm-db-update");
     } else {
         alert("required field");
     }
@@ -121,7 +120,7 @@ $("section").on('click', '#confirm-db-update', function (event) {
                 article.hide();
                 $("#new-table").show();
                 modalToggle(`Database '${dbName}' has been renamed`);
-				dbName = response.data;
+                dbName = response.data;
             }
         }
     }).fail(error => {
@@ -131,11 +130,8 @@ $("section").on('click', '#confirm-db-update', function (event) {
 
 $("section").on('click','#delete-db-submit',function (event){
     event.preventDefault();
-
-    $("#modal").show();
-    $("#modal > #modal-body > p").html(`You are about to DESTROY a complete database! Do you really want to execute "DROP DATABASE ${dbName}"?`);
-    var button = $(".confirm-db");
-    $(button).attr("id", "confirm-db-delete");
+    openModal(`You are about to DESTROY a complete database! Do you really want to execute "DROP DATABASE ${dbName}"?`,
+              "confirm-db-delete");
 });
 
 $("section").on('click', '#confirm-db-delete', function (event) {
@@ -144,10 +140,10 @@ $("section").on('click', '#confirm-db-delete', function (event) {
 
     $.ajax({
         url: 'databases/delete',
-        type: 'POST',
+        type: 'GET',
         async: true,
         dataType: "JSON",
-        data: {
+        headers: {
             dbName: dbName
         }
     }).done(response => {
@@ -263,6 +259,17 @@ $("section").on('click','#add-submit',function (event) {
     }
 });
 
+$("#open-table-operations").click(function(event) {
+	event.preventDefault();
+	dbName = $(this).attr("data-base");
+	tableName = $(this).attr("data-table");
+
+	$(".open-table").removeClass('active');
+	$("#open-table-operations").addClass('active');
+	$(".tables-content-article").hide();
+	$("#table-operations").show();
+})
+
 $("#save-table").click(function (event) {
     event.preventDefault();
     var nameField = getFieldValues($(".name-field"));
@@ -326,8 +333,6 @@ $("#save-table").click(function (event) {
                 li.innerHTML = "‐‐‐" + icon + " " + `<span>${tableName}</span>`;
                 tablesList.append(li);
 
-                $(".fields").remove();
-                $(".structure-column").attr("data-table", tableName);
                 tablesStructure(response.data, dbName, tableName);
                 modalToggle(`Table '${tableName}' has been created`);
             };
@@ -337,9 +342,10 @@ $("#save-table").click(function (event) {
     })
 });
 
-$("section").on('click', '.structure-column', function (event) {
+$("section").on('click', '#open-table-structure', function (event) {
     event.preventDefault();
     tableName = $(this).attr("data-table");
+    dbName = $(this).attr("data-base");
     loadContent.show();
 
     $.ajax({
@@ -394,9 +400,9 @@ $("section").on('click','#update-tbl-submit',function (event){
                     });
                     li.find("span").html(newTblName);
                     li.attr("data-table", newTblName);
-                    $(".browse-str").attr("data-table", newTblName);
-                    $(".structure-column").attr("data-table", newTblName);
                     $("#tblName").val(newTblName);
+					$(".open-table").attr("data-base", dbName);
+					$(".open-table").attr("data-table", newTblName);
                     modalToggle(`Table '${tableName}' has been renamed`);
                     tableName = newTblName;
                 }
@@ -411,22 +417,14 @@ $("section").on('click','#update-tbl-submit',function (event){
 
 $("section").on('click','#delete-tbl-submit',function (event){
     event.preventDefault();
-
-    $("#modal").show();
-    $("#modal > #modal-body > p").html(`You are about to DESTROY a complete table! 
-                                  Do you really want to execute "DROP TABLE ${tableName}"?`);
-    var button = $(".confirm-db");
-    $(button).attr("id", "confirm-tbl-delete");
+    openModal(`You are about to DESTROY a complete table! Do you really 
+              want to execute "DROP TABLE ${tableName}"?`, "confirm-tbl-delete");
 });
 
 $("section").on('click','#empty-tbl-submit',function (event){
     event.preventDefault();
-
-    $("#modal").show();
-    $("#modal > #modal-body > p").html(`You are about to TRUNCATE a complete table!
-     Do you really want to execute TRUNCATE '${dbName}'.'${tableName}'?`);
-    var button = $(".confirm-db");
-    $(button).attr("id", "confirm-tbl-empty");
+    openModal(`You are about to TRUNCATE a complete table!
+     Do you really want to execute TRUNCATE '${dbName}'.'${tableName}'?`, "confirm-tbl-empty");
 });
 
 $("section").on('click', '#confirm-tbl-delete', function (event) {
@@ -435,10 +433,10 @@ $("section").on('click', '#confirm-tbl-delete', function (event) {
 
     $.ajax({
         url: 'tables/delete',
-        type: 'POST',
+        type: 'GET',
         async: true,
         dataType: "JSON",
-        data: {
+        headers: {
             dbName: dbName,
             tableName: tableName
         }
@@ -484,10 +482,10 @@ $("section").on('click', '#confirm-tbl-empty', function (event) {
 
     $.ajax({
         url: 'tables/truncate',
-        type: 'POST',
+        type: 'GET',
         async: true,
         dataType: "JSON",
-        data: {
+        headers: {
             dbName: dbName,
             tableName: tableName
         }
@@ -497,7 +495,7 @@ $("section").on('click', '#confirm-tbl-empty', function (event) {
             setTimeout(load, 300);
             function load() {
                 loadContent.hide();
-				$(".table-fields").remove();
+                $(".table-fields").remove();
                 modalToggle('MySQl returned an empty result set (i.e. 0 rows).');
             }
         }
@@ -507,76 +505,125 @@ $("section").on('click', '#confirm-tbl-empty', function (event) {
 });
 
 $("section").on('click', '.table-name', function () {
-	tableName = $(this).attr("data-table");
-	dbName = $(this).attr("data-base");
-	loadContent.show();
+    tableName = $(this).attr("data-table");
+    dbName = $(this).attr("data-base");
+    loadContent.show();
 
-	$.ajax({
-		url     : 'fields',
-		type    : 'GET',
-		async   : true,
-		dataType: "JSON",
-		headers    : {
-			table: tableName,
-			dbName: dbName
-		}
-	}).done(response => {
-		if (response.type === 'success') {
-			setTimeout(load, 300);
-			function load() {
-				loadContent.hide();
-				$(window).scrollTop(0);
-				var table    = document.createElement('TABLE');
-				var thDel       = document.createElement('TH');
-				var tHead    = document.createElement('TR');
-				thDel.innerHTML = '';
-				tHead.append(thDel);
-				table.append(tHead);
-				response.column.forEach(function (col) {
-					var th       = document.createElement('TH');
-					th.innerHTML = col;
-					tHead.append(th)
-				});
+    $.ajax({
+        url     : 'fields',
+        type    : 'GET',
+        async   : true,
+        dataType: "JSON",
+        headers    : {
+            table: tableName,
+            dbName: dbName
+        }
+    }).done(response => {
+        if (response.type === 'success') {
+            setTimeout(load, 300);
+            function load() {
+                loadContent.hide();
+                $(window).scrollTop(0);
+                var table    = document.createElement('TABLE');
+                var thDel       = document.createElement('TH');
+                var tHead    = document.createElement('TR');
+                thDel.innerHTML = '';
+                tHead.append(thDel);
+                table.append(tHead);
+                response.column.forEach(function (col) {
+                    var th       = document.createElement('TH');
+                    th.innerHTML = col;
+                    tHead.append(th)
+                });
 
-				$.each(response.field, function (key, val) {
-					var tBody = document.createElement('TR');
-					var trDel = document.createElement('TD');
-					setAttributes(tBody, {"class": "table-fields", "data-base": dbName, "data-table": tableName});
-					trDel.innerHTML = `<p class="del-field" data-base="${dbName}" data-table="${tableName}">` +
-						'<i class="fas fa-minus-circle"></i> Delete</p>';
-					table.append(tBody);
-					tBody.append(trDel);
-					$.each(val, function (k, v) {
-						var td = document.createElement('TD');
-						td.innerHTML = v;
-						tBody.append(td);
-					})
-				});
+                $.each(response.field, function (key, val) {
+                    var tBody = document.createElement('TR');
+                    var trDel = document.createElement('TD');
+                    setAttributes(tBody, {"class": "table-fields", "data-base": dbName, "data-table": tableName});
+                    trDel.innerHTML = `<p class="del-field" data-base="${dbName}"` +
+                        ` data-table="${tableName}" data-id="${val.id}">` +
+                        '<i class="fas fa-minus-circle"></i> Delete</p>';
+                    table.append(tBody);
+                    tBody.append(trDel);
+                    $.each(val, function (k, v) {
+                        var td = document.createElement('TD');
+                        td.innerHTML = v;
+                        tBody.append(td);
+                    })
+                });
 
-				var title = ` <button class="browse-column browse">Browse</button>
-                <button class="structure-column browse" data-base="${dbName}" data-table="${tableName}">Structure</button>`;
-				var tableContent = $("#table-content");
-
-				$(".browse-str").attr("data-table", tableName);
-				$("#tblName").val(tableName);
-				$("#table-title").html(title);
-				$(tableContent).html(table);
-				article.hide();
-				if (dbName === 'information_schema') {
-					$("#update-table").hide();
-					$("#del-table").hide();
-				} else {
-					$("#update-table").show();
-					$("#del-table").show();
-				}
-				$("#table-columns").show();
-			}
-		}
-	}).fail(error => {
-		console.log(error);
-	})
+                $("#tblName").val(tableName);
+                $("#table-browse").html(table);
+                $(".open-table").attr("data-base", dbName);
+                $(".open-table").attr("data-table", tableName);
+                $(".open-table").removeClass('active');
+                $("#open-table-browse").addClass('active');
+                $("#open-table-browse").addClass('table-name');
+                article.hide();
+                $(".tables-content-article").hide();
+                if (dbName === 'information_schema') {
+                    $("#open-table-insert").hide();
+                    $("#open-table-operations").hide();
+                } else {
+					$("#open-table-insert").show();
+					$("#open-table-operations").show();
+                }
+				$("#table-browse").show();
+                $("#tables-content").show();
+            }
+        }
+    }).fail(error => {
+        console.log(error);
+    })
 });
 
+$("section").on('click', '.del-field', function (event){
+    event.preventDefault();
+    id = $(this).attr("data-id");
+    dbName = $(this).attr("data-base");
+    tableName = $(this).attr("data-table");
+    deleteField = $(this);
+    openModal(`Do you really want to execute "DELETE FROM '${tableName}' WHERE '${tableName}'.'id' = ${id}"?`, "confirm-del-field")
+})
+
+$("section").on('click', '#confirm-del-field', function (event) {
+    event.preventDefault();
+    loadContent.show();
+
+    $.ajax({
+        url: 'fields/delete/' + id,
+        type: 'GET',
+        async: true,
+        dataType: "JSON",
+        headers: {
+            dbName: dbName,
+            tableName: tableName
+        }
+    }).done(response => {
+        if (response.type === 'success') {
+            setTimeout(load, 300);
+            function load() {
+                $("#modal").hide();
+                loadContent.hide();
+                $(deleteField).parent('td').parent('tr').remove();
+                modalToggle('1 row affected');
+            }
+        }
+    }).fail(error => {
+        console.log(error);
+    })
+});
+
+$("#open-table-insert").click(function(event) {
+	event.preventDefault();
+	dbName = $(this).attr("data-base");
+	tableName = $(this).attr("data-table");
+
+	$(".open-table").removeClass('active');
+	$("#open-table-insert").addClass('active');
+	$(".tables-content-article").hide();
+	$("#table-insert").show();
+})
 
 function tablesStructure(fields, db, table) {
     $(".field-data").remove();
@@ -591,12 +638,15 @@ function tablesStructure(fields, db, table) {
         })
     });
 
-    var brows = `<button class="table-name browse-str browse" data-base="${db}" data-table="${table}">`+
-        `Browse</button><button class="structure-str browse">Structure</button>`;
-    $("#structure-title").html(brows);
-
-    article.hide();
-    $("#table-structure").show();
+	$(".open-table").attr("data-base", dbName);
+	$(".open-table").attr("data-table", tableName);
+	$(".open-table").removeClass('active');
+	$("#open-table-structure").addClass('active');
+	$("#open-table-browse").addClass('table-name');
+	article.hide();
+	$(".tables-content-article").hide();
+	$("#table-structure").show();
+	$("#tables-content").show();
 }
 
 function modalToggle(data) {
@@ -606,6 +656,13 @@ function modalToggle(data) {
     function closeModal() {
         $("#response-modal").hide();
     }
+}
+
+function openModal(data, id) {
+    $("#modal").show();
+    $("#modal > #modal-body > p").html(data);
+    var button = $(".confirm-db");
+    $(button).attr("id", id);
 }
 
 function newTable() {

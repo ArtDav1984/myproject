@@ -49,17 +49,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'databases_controller';
-$route['404_override'] = '';
-$route['translate_uri_dashes'] = FALSE;
-
-$route['databases/create'] = 'databases_controller/create';
-$route['databases/update'] = 'databases_controller/update';
-$route['databases/delete'] = 'databases_controller/delete';
-$route['tables'] = 'tables_controller';
-$route['tables/create'] = 'tables_controller/create';
-$route['tables/update'] = 'tables_controller/update';
-$route['tables/delete'] = 'tables_controller/delete';
-$route['tables/truncate'] = 'tables_controller/truncate';
-$route['tables/structure'] = 'tables_controller/structure';
-$route['fields'] = 'fields_controller';
+	$route['default_controller'] = 'databases_controller';
+	$route['404_override'] = '';
+	$route['translate_uri_dashes'] = FALSE;
+	$route['databases/create'] = 'databases_controller/create';
+	$route['databases/update'] = 'databases_controller/update';
+	$route['databases/delete'] = 'databases_controller/delete';
+	$route['tables'] = 'tables_controller';
+	$route['tables/create'] = 'tables_controller/create';
+	$route['tables/update'] = 'tables_controller/update';
+	$route['tables/delete'] = 'tables_controller/delete';
+	$route['tables/truncate'] = 'tables_controller/truncate';
+	$route['tables/structure'] = 'tables_controller/structure';
+	$route['fields/delete/:num'] = 'fields_controller/delete/$1';
+	$route['fields'] = 'fields_controller';

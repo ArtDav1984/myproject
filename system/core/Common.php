@@ -538,7 +538,7 @@ if ( ! function_exists('set_status_header'))
 				426	=> 'Upgrade Required',
 				428	=> 'Precondition Required',
 				429	=> 'Too Many Requests',
-				431	=> 'Request Header FieldsController Too Large',
+				431	=> 'Request Header Fields Too Large',
 
 				500	=> 'Internal Server Error',
 				501	=> 'Not Implemented',

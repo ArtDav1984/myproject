@@ -54,7 +54,7 @@ abstract class CI_DB_forge {
 	protected $db;
 
 	/**
-	 * FieldsController data
+	 * Fields data
 	 *
 	 * @var	array
 	 */
