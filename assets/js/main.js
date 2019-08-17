@@ -62,7 +62,7 @@ $("section").on('click', '.database', function () {
     var parent = $(this).parent("li");
     dbName = parent.attr("data-base");
     database = $(this);
-    if (dbName !== 'information_schema') {
+    if (dbName !== 'information_schema' && dbName !== 'performance_schema') {
         article.hide();
         $("#new-table").show();
         $("#update-db").show();
@@ -197,7 +197,7 @@ $("section").on('click', '.db-name', function () {
                 setTimeout(load, 300);
                 function load() {
                     loadAside.hide();
-                    if (dbName !== 'information_schema') {
+                    if (dbName !== 'information_schema' && dbName !== 'performance_schema') {
                         var newTbl = newTable();
                         ul.append(newTbl);
                     }
@@ -267,7 +267,9 @@ $("#open-table-operations").click(function(event) {
 	$(".open-table").removeClass('active');
 	$("#open-table-operations").addClass('active');
 	$(".tables-content-article").hide();
+	article.hide();
 	$("#table-operations").show();
+	$("#tables-content").show();
 })
 
 $("#save-table").click(function (event) {
@@ -561,7 +563,7 @@ $("section").on('click', '.table-name', function () {
                 $("#open-table-browse").addClass('table-name');
                 article.hide();
                 $(".tables-content-article").hide();
-                if (dbName === 'information_schema') {
+                if (dbName === 'information_schema' || dbName === 'performance_schema') {
                     $("#open-table-insert").hide();
                     $("#open-table-operations").hide();
                 } else {
@@ -622,7 +624,9 @@ $("#open-table-insert").click(function(event) {
 	$(".open-table").removeClass('active');
 	$("#open-table-insert").addClass('active');
 	$(".tables-content-article").hide();
+	article.hide();
 	$("#table-insert").show();
+	$("#tables-content").show();
 })
 
 function tablesStructure(fields, db, table) {
