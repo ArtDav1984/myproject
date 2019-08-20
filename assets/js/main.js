@@ -131,7 +131,7 @@ $("section").on('click', '#confirm-db-update', function (event) {
 $("section").on('click','#delete-db-submit',function (event){
     event.preventDefault();
     openModal(`You are about to DESTROY a complete database! Do you really want to execute "DROP DATABASE ${dbName}"?`,
-              "confirm-db-delete");
+        "confirm-db-delete");
 });
 
 $("section").on('click', '#confirm-db-delete', function (event) {
@@ -260,16 +260,16 @@ $("section").on('click','#add-submit',function (event) {
 });
 
 $("#open-table-operations").click(function(event) {
-	event.preventDefault();
-	dbName = $(this).attr("data-base");
-	tableName = $(this).attr("data-table");
+    event.preventDefault();
+    dbName = $(this).attr("data-base");
+    tableName = $(this).attr("data-table");
 
-	$(".open-table").removeClass('active');
-	$("#open-table-operations").addClass('active');
-	$(".tables-content-article").hide();
-	article.hide();
-	$("#table-operations").show();
-	$("#tables-content").show();
+    $(".open-table").removeClass('active');
+    $("#open-table-operations").addClass('active');
+    $(".tables-content-article").hide();
+    article.hide();
+    $("#table-operations").show();
+    $("#tables-content").show();
 })
 
 $("#save-table").click(function (event) {
@@ -403,8 +403,8 @@ $("section").on('click','#update-tbl-submit',function (event){
                     li.find("span").html(newTblName);
                     li.attr("data-table", newTblName);
                     $("#tblName").val(newTblName);
-					$(".open-table").attr("data-base", dbName);
-					$(".open-table").attr("data-table", newTblName);
+                    $(".open-table").attr("data-base", dbName);
+                    $(".open-table").attr("data-table", newTblName);
                     modalToggle(`Table '${tableName}' has been renamed`);
                     tableName = newTblName;
                 }
@@ -567,10 +567,10 @@ $("section").on('click', '.table-name', function () {
                     $("#open-table-insert").hide();
                     $("#open-table-operations").hide();
                 } else {
-					$("#open-table-insert").show();
-					$("#open-table-operations").show();
+                    $("#open-table-insert").show();
+                    $("#open-table-operations").show();
                 }
-				$("#table-browse").show();
+                $("#table-browse").show();
                 $("#tables-content").show();
             }
         }
@@ -617,16 +617,79 @@ $("section").on('click', '#confirm-del-field', function (event) {
 });
 
 $("#open-table-insert").click(function(event) {
-	event.preventDefault();
-	dbName = $(this).attr("data-base");
-	tableName = $(this).attr("data-table");
+    event.preventDefault();
+    dbName = $(this).attr("data-base");
+    tableName = $(this).attr("data-table");
+    loadContent.show();
 
-	$(".open-table").removeClass('active');
-	$("#open-table-insert").addClass('active');
-	$(".tables-content-article").hide();
-	article.hide();
-	$("#table-insert").show();
-	$("#tables-content").show();
+    $.ajax({
+       url: 'fields/data',
+       type: 'GET',
+       async: true,
+       dataType: 'JSON',
+       headers: {
+           dbName: dbName,
+           tableName: tableName
+       }
+    }).done(response => {
+        if (response.type = 'success') {
+            setTimeout(load, 300);
+            function load() {
+                loadContent.hide();
+                $(".open-table").removeClass('active');
+                $("#open-table-insert").addClass('active');
+                $(".tables-content-article").hide();
+                article.hide();
+                $("#table-insert").show();
+                $("#tables-content").show();
+                $("#insert").remove();
+                var insert = `<div id="insert"><form method="post"><table>` +
+                             `<tr><th>Column</th><th>Type</th><th>Value</th></tr>`;
+                response.data.forEach(function (val) {
+                    insert += `<tr><td>${val.name}</td><td>${val.type}(${val.max_length})</td><td>`;
+                              if (val.type == 'int') {
+                                  insert+= `<input type="text" value="0" class="insert-data insert-input">`;
+                              } else {
+                                  insert += `<textarea class="insert-data insert-text">0</textarea>`;
+                              }
+                    insert +=  `</td></tr>`;
+                });
+                    insert += `</table><div id="insert-bot"><button type="submit" id="save-insert">Go</button></div></form></div>`;
+                $("#table-insert").append(insert);
+            }
+        }
+    }).fail(error => {
+        console.log(error);
+    });
+})
+
+$("section").on('click', '#save-insert', function (event){
+    event.preventDefault();
+    loadContent.show();
+    var insertData = getFieldValues($(".insert-data"));
+
+    $.ajax({
+        url: 'fields/insert',
+        type: 'POST',
+        async: true,
+        dataType: 'JSON',
+        data: {
+            dbName: dbName,
+            tableName: tableName,
+            insertData: insertData
+        }
+    }).done(response => {
+        if (response.type = 'success') {
+            setTimeout(load, 300);
+            function load() {
+                loadContent.hide();
+                $(".insert-data").val('');
+                modalToggle('1 row inserted.');
+            }
+        }
+    }).fail(error => {
+        console.log(error);
+    })
 })
 
 function tablesStructure(fields, db, table) {
@@ -642,15 +705,15 @@ function tablesStructure(fields, db, table) {
         })
     });
 
-	$(".open-table").attr("data-base", dbName);
-	$(".open-table").attr("data-table", tableName);
-	$(".open-table").removeClass('active');
-	$("#open-table-structure").addClass('active');
-	$("#open-table-browse").addClass('table-name');
-	article.hide();
-	$(".tables-content-article").hide();
-	$("#table-structure").show();
-	$("#tables-content").show();
+    $(".open-table").attr("data-base", db);
+    $(".open-table").attr("data-table", table);
+    $(".open-table").removeClass('active');
+    $("#open-table-structure").addClass('active');
+    $("#open-table-browse").addClass('table-name');
+    article.hide();
+    $(".tables-content-article").hide();
+    $("#table-structure").show();
+    $("#tables-content").show();
 }
 
 function modalToggle(data) {

@@ -47,4 +47,38 @@
 				}
 			}
 		}
+		
+		public function data()
+		{
+			if ($this->input->is_ajax_request()) {
+				$table_name = $this->input->get_request_header('tableName');
+				$db_name    = $this->input->get_request_header('dbName');
+				
+				if ($db_name && $table_name) {
+				   $fields = $this->Fields->getTableStructure($table_name, $db_name);
+				   if (!is_null($fields)) {
+				   	  echo json_encode(['data' => $fields, 'type' => 'success']);
+				   } else {
+				   	  echo json_encode(['type' => 'fail']);
+				   }
+				}
+			}
+		}
+		
+		public function insert()
+		{
+			if ($this->input->is_ajax_request()) {
+				$table_name = $this->input->post('tableName');
+				$db_name    = $this->input->post('dbName');
+				$insert_data = $this->input->post('insertData');
+				
+				if (isset($db_name) && isset($table_name) && isset($insert_data)) {
+					if ($this->Fields->insertData($db_name, $table_name, $insert_data)) {
+						echo json_encode(['type' => 'success']);
+					} else {
+						echo json_encode(['type' => 'fail']);
+					}
+				}
+			}
+		}
 	}

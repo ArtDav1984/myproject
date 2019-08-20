@@ -22,25 +22,25 @@
                     <span id="create-db">New</span>
                 </li>
             </div>
-            
-            <?php if (!is_null($databases)) : ?>
+			
+			<?php if (!is_null($databases)) : ?>
 				
-            <?php foreach ($databases as $database => $item) : ?>
-                
-                <div class="vertical-line">
-                    <li class="database-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
-                        <image class="load-aside" src="<?php echo base_url() ?>assets/img/load.gif" />
-                        <i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i><span class="horizontal-line">-</span><i class="fas fa-database"></i>
-                        <span class="db-name database"><?= $item['Database']; ?></span>
-                        <div class="hide-line">
-                            <ul class="tables-list" data-base="<?= $item['Database']; ?>"> </ul>
-                        </div>
-                    </li>
-                </div>
-                
-            <?php endforeach; ?>
-            
-            <?php endif; ?>
+				<?php foreach ($databases as $database => $item) : ?>
+
+                    <div class="vertical-line">
+                        <li class="database-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
+                            <image class="load-aside" src="<?php echo base_url() ?>assets/img/load.gif" />
+                            <i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i><span class="horizontal-line">-</span><i class="fas fa-database"></i>
+                            <span class="db-name database"><?= $item['Database']; ?></span>
+                            <div class="hide-line">
+                                <ul class="tables-list" data-base="<?= $item['Database']; ?>"> </ul>
+                            </div>
+                        </li>
+                    </div>
+				
+				<?php endforeach; ?>
+			
+			<?php endif; ?>
 
         </ul>
     </div>
@@ -102,37 +102,37 @@
             </form>
         </div>
 
-		<div id="tables-content" class="article">
+        <div id="tables-content" class="article">
 
-			<div id="tables-nav">
-				<button id="open-table-browse" class="open-table">Browse</button>
-				<button id="open-table-structure" class="open-table">Structure</button>
-				<button id="open-table-insert" class="open-table">Insert</button>
-				<button id="open-table-operations" class="open-table">Operations</button>
-			</div>
+            <div id="tables-nav">
+                <button id="open-table-browse" class="open-table">Browse</button>
+                <button id="open-table-structure" class="open-table">Structure</button>
+                <button id="open-table-insert" class="open-table">Insert</button>
+                <button id="open-table-operations" class="open-table">Operations</button>
+            </div>
 
-			<div id="table-browse" class="tables-content-article">
+            <div id="table-browse" class="tables-content-article">
 
-			</div>
+            </div>
 
-			<div id="table-structure" class="tables-content-article">
-				<table class="table-structure">
-					<tr>
-						<th>Name</th>
-						<th>Type</th>
-						<th>Max-length</th>
-						<th>Default</th>
-						<th>Primary-key</th>
-					</tr>
-				</table>
-			</div>
+            <div id="table-structure" class="tables-content-article">
+                <table class="table-structure">
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Max-length</th>
+                        <th>Default</th>
+                        <th>Primary-key</th>
+                    </tr>
+                </table>
+            </div>
 
-			<div id="table-insert" class="tables-content-article">
-				<p>insert</p>
-			</div>
+            <div id="table-insert" class="tables-content-article">
+            
+            </div>
 
-			<div id="table-operations" class="tables-content-article">
-			    <div id="update-table">
+            <div id="table-operations" class="tables-content-article">
+                <div id="update-table">
                     <form method="post">
                         <fieldset>
                             <legend><i class="fas fa-pencil-alt"></i> Rename table to</legend>
@@ -153,29 +153,29 @@
                     </form>
                 </div>
             </div>
-		</div>
+        </div>
 
-            <div id="table" class="article">
-                <form method="post">
-                    Table name: <input type="text" id="update-name">
-                    Add: <input type="number" id="update-number" value="1">
-                    <button type="submit" id="add-submit">Go</button>
-                    <div class="line"></div>
-                    <table class="table">
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Length/Values</th>
-                            <th>Default</th>
-                            <th>Index</th>
-                        </tr>
-                    </table>
-                    <div id="bot-line">
-                        <button type="submit" id="save-table">Save</button>
-                    </div>
-                </form>
-            </div>
-		</div>
+        <div id="table" class="article">
+            <form method="post">
+                Table name: <input type="text" id="update-name">
+                Add: <input type="number" id="update-number" value="1">
+                <button type="submit" id="add-submit">Go</button>
+                <div class="line"></div>
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Length/Values</th>
+                        <th>Default</th>
+                        <th>Index</th>
+                    </tr>
+                </table>
+                <div id="bot-line">
+                    <button type="submit" id="save-table">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
     </div>
 
     <div id="modal">
@@ -185,7 +185,7 @@
         </div>
         <div id="modal-body">
             <p>
-            
+
             </p>
         </div>
         <div id="modal-footer">
@@ -195,12 +195,12 @@
             </form>
         </div>
     </div>
-    
+
     <div id="response-modal">
         <div id="m-body">
-           <p>
-           
-           </p>
+            <p>
+
+            </p>
         </div>
     </div>
 
