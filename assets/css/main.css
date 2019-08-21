@@ -58,6 +58,8 @@ ul {
 }
 #db-name,
 #charsets,
+#copyDb,
+#moveDb,
 #db-submit {
     height: 25px;
     outline: none;
@@ -65,6 +67,10 @@ ul {
 #charsets,
 #columns-title {
     width: 250px;
+}
+#moveDb,
+#copyDb {
+    width: 200px;
 }
 #db-name {
     width: 220px;
@@ -74,7 +80,9 @@ ul {
 #db-submit,
 #table-submit,
 #update-db-submit,
-#update-tbl-submit {
+#update-tbl-submit,
+#copy-tbl-submit,
+#move-tbl-submit {
     width: 60px;
     margin-left: 20px;
     border-radius: 20px;
@@ -84,8 +92,10 @@ ul {
 }
 #db-submit:hover,
 #table-submit:hover,
-#update-db-submit,
-#update-tbl-submit {
+#update-db-submit:hover,
+#update-tbl-submit:hover,
+#copy-tbl-submit:hover,
+#move-tbl-submit:hover {
     background-color: #f4f5fd;
 }
 .tables-list {
@@ -160,7 +170,9 @@ tr:nth-child(odd) {
 #update-db,
 #del-db,
 #update-table,
-#del-table {
+#del-table,
+#copy-table,
+#move-table {
     width: 98%;
     margin: 20px auto 0;
 }
@@ -184,7 +196,9 @@ legend {
 #tableName,
 #update-name,
 #dbName,
-#tblName {
+#tblName,
+#copyTblName,
+#moveTblName {
     height: 25px;
     width: 250px;
     outline: none;
@@ -203,7 +217,9 @@ legend {
 }
 #table-submit,
 #update-db-submit,
-#update-tbl-submit{
+#update-tbl-submit,
+#copy-tbl-submit,
+#move-tbl-submit {
     margin-left: 90%;
     background-color: #f6f7f8;
     height: 25px;

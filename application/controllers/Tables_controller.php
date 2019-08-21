@@ -35,13 +35,15 @@
 				
 				if (isset($db_name) && isset($table_name) && isset($number_column) && isset($data_fields)) {
 					$create = $this->Tables->createTable($db_name, $table_name, $number_column, $data_fields);
-					if ($create){
+					if ($create === true){
 						$fields = $this->Tables->getTableStructure($db_name, $table_name);
 						if (!is_null($fields)){
 							echo json_encode(['data' => $fields, 'type' => 'success']);
 						} else {
 							echo json_encode(['type' => 'fail']);
 						}
+					} else {
+						echo json_encode(['data' => $create, 'type' => 'error']);
 					}
 				}
 			}
@@ -98,6 +100,40 @@
 					$fields = $this->Tables->getTableStructure($db_name, $table_name);
 					if (!is_null($fields)){
 						echo json_encode(['data' => $fields, 'type' => 'success']);
+					} else {
+						echo json_encode(['type' => 'fail']);
+					}
+				}
+			}
+		}
+		
+		public function copy()
+		{
+			if ($this->input->is_ajax_request()){
+				$newTbl_name = $this->input->post('newTblName');
+				$newDb_name = $this->input->post('newDbName');
+				$table_name = $this->input->post('tableName');
+				$db_name = $this->input->post('dbName');
+				if (isset($newTbl_name) && isset($newDb_name) && isset($table_name) && isset($db_name)) {
+					if ($this->Tables->copyTable($newTbl_name, $newDb_name, $table_name, $db_name)){
+						echo json_encode(['type' => 'success']);
+					} else {
+						echo json_encode(['type' => 'fail']);
+					}
+				}
+			}
+		}
+		
+		public function move()
+		{
+			if ($this->input->is_ajax_request()){
+				$newTbl_name = $this->input->post('newTblName');
+				$newDb_name = $this->input->post('newDbName');
+				$table_name = $this->input->post('tableName');
+				$db_name = $this->input->post('dbName');
+				if (isset($newTbl_name) && isset($newDb_name) && isset($table_name) && isset($db_name)) {
+					if ($this->Tables->moveTable($newTbl_name, $newDb_name, $table_name, $db_name)){
+						echo json_encode(['type' => 'success']);
 					} else {
 						echo json_encode(['type' => 'fail']);
 					}

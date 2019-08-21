@@ -27,8 +27,17 @@
 		public function createTable($db_name, $table_name, $number_column, $data_fields)
 		{
 			$fieldsArr = array();
+			$errors = array();
 			for ($i = 0; $i < $number_column; $i ++)
 			{
+				if (empty($data_fields['nameField'][$i])) {
+					$errors[] = 'Missing value in the form!';
+				}
+				
+				if (!empty($errors)) {
+					return $errors[0];
+				}
+				
 				if ($data_fields['indexField'][$i] !== '---') {
 					$unique = true;
 				} else {
@@ -93,5 +102,23 @@
 				return null;
 			}
 			return $fields;
+		}
+		
+		public function copyTable($newTbl_name, $newDb_name, $table_name, $db_name)
+		{
+		    if ($this->db->query("CREATE TABLE $newDb_name.$newTbl_name LIKE $db_name.$table_name")) {
+		        if ($this->db->query("INSERT INTO $newDb_name.$newTbl_name SELECT * FROM $db_name.$table_name;")) {
+		        	return true;
+		        }
+		    }
+			return false;
+		}
+		
+		public function moveTable($newTbl_name, $newDb_name, $table_name, $db_name)
+		{
+			if ($this->db->query("ALTER TABLE $db_name.$table_name RENAME $newDb_name.$newTbl_name")) {
+				return true;
+			}
+			return false;
 		}
 	}

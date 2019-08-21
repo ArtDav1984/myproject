@@ -135,7 +135,7 @@
                 <div id="update-table">
                     <form method="post">
                         <fieldset>
-                            <legend><i class="fas fa-pencil-alt"></i> Rename table to</legend>
+                            <legend> Rename table to</legend>
                             <input type="text" name="tableName" id="tblName"/>
                             <br /><br />
                             <button type="submit" id="update-tbl-submit">Go</button>
@@ -143,10 +143,62 @@
                     </form>
                 </div>
 
+                <div id="copy-table">
+                    <form method="post">
+                        <fieldset>
+                            <legend> Copy table to (database.table)</legend>
+                            <select name="copyDb" id="copyDb">
+	
+	                            <?php if (!is_null($databases)) : ?>
+		
+		                            <?php foreach ($databases as $database => $item) : ?>
+
+                                        <option value="<?= $item['Database'] ?>">
+				                            <?= $item['Database'] ?>
+                                        </option>
+		
+		                            <?php endforeach; ?>
+	
+	                            <?php endif; ?>
+                            
+                            </select>
+                            <input type="text" name="tableName" id="copyTblName"/>
+                            <br /><br />
+                            <button type="submit" id="copy-tbl-submit">Go</button>
+                        </fieldset>
+                    </form>
+                </div>
+
+                <div id="move-table">
+                    <form method="post">
+                        <fieldset>
+                            <legend> Move table to (database.table)</legend>
+                            <select name="copyDb" id="moveDb">
+					
+					            <?php if (!is_null($databases)) : ?>
+						
+						            <?php foreach ($databases as $database => $item) : ?>
+
+                                        <option value="<?= $item['Database'] ?>">
+								            <?= $item['Database'] ?>
+                                        </option>
+						
+						            <?php endforeach; ?>
+					
+					            <?php endif; ?>
+
+                            </select>
+                            <input type="text" name="tableName" id="moveTblName"/>
+                            <br /><br />
+                            <button type="submit" id="move-tbl-submit">Go</button>
+                        </fieldset>
+                    </form>
+                </div>
+
                 <div id="del-table">
                     <form method="post">
                         <fieldset>
-                            <legend><i class="far fa-calendar-times"></i> Remove table</legend>
+                            <legend>Delete data or table</legend>
                             <button id="empty-tbl-submit">Empty the table (TRUNCATE)</button> <br>
                             <button id="delete-tbl-submit">Delete the table (DROP)</button>
                         </fieldset>

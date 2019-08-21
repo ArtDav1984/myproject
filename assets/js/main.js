@@ -47,6 +47,10 @@ $("section").on('click', '#db-submit',function (event) {
                         `<span class="db-name database">&nbsp;${response.data}</span>` +
                         `<div class="hide-line"> <ul class="tables-list" data-base="${response.data}"> </ul> </div> </li> </div>`;
                     $(".databases").append(newDbLine);
+
+                    var option = `<option value="${response.data}">${response.data}</option>`;
+                    $("#copyDb").append(option);
+                    $("#moveDb").append(option);
                     modalToggle(`Database '${response.data}' has been created`);
                 }
             }
@@ -117,6 +121,26 @@ $("section").on('click', '#confirm-db-update', function (event) {
                 $(tableName).attr("data-base", response.data);
                 $(tablesList).attr("data-base", response.data);
                 $(tableName).attr("class", "table-name new-name");
+
+                var optionsCopy = $("#copyDb > option");
+                var optionsMove = $("#moveDb > option");
+                var optionCopy = '';
+                var optionMove = '';
+                $.each(optionsCopy, function (k, v) {
+                    if (dbName === $(v).val()) {
+                        optionCopy = $(v);
+                    }
+                });
+                $.each(optionsMove, function (k, v) {
+                    if (dbName === $(v).val()) {
+                        optionMove = $(v);
+                    }
+                });
+                optionCopy.html(response.data);
+                optionCopy.val(response.data);
+                optionMove.html(response.data);
+                optionMove.val(response.data);
+
                 article.hide();
                 $("#new-table").show();
                 modalToggle(`Database '${dbName}' has been renamed`);
@@ -153,10 +177,27 @@ $("section").on('click', '#confirm-db-delete', function (event) {
             function load() {
                 loadContent.hide();
                 var parent = database.parent('li').parent('div');
+                var optionsCopy = $("#copyDb > option");
+                var optionsMove = $("#moveDb > option");
+                var optionCopy = '';
+                var optionMove = '';
+                $.each(optionsCopy, function (k, v) {
+                    if (dbName === $(v).val()) {
+                        optionCopy = $(v);
+                    }
+                });
+                $.each(optionsMove, function (k, v) {
+                    if (dbName === $(v).val()) {
+                        optionMove = $(v);
+                    }
+                });
+                $(optionCopy).remove();
+                $(optionMove).remove();
                 $(parent).remove();
                 article.hide();
                 $("#new-db").show();
                 $("#db-name").val('');
+
                 modalToggle('MySQl returned an empty result set (i.e. 0 rows).');
             }
         }
@@ -183,6 +224,7 @@ $("section").on('click', '.db-name', function () {
     minus.toggle();
 
     if (expended === 'false') {
+    	ul.find('li').remove();
         loadAside.show();
         $.ajax({
             url     : 'tables',
@@ -270,7 +312,97 @@ $("#open-table-operations").click(function(event) {
     article.hide();
     $("#table-operations").show();
     $("#tables-content").show();
-})
+    $("#copyTblName").val(tableName);
+    $("#moveTblName").val(tableName);
+    $("#copyDb").val(dbName);
+    $("#moveDb").val(dbName);
+});
+
+$("#copy-tbl-submit").click(function (event) {
+    event.preventDefault();
+    newDbName = $("#copyDb > option:selected").val();
+    newTblName = $("#copyTblName").val();
+    loadContent.show();
+
+    $.ajax({
+        url: 'tables/copy',
+        type: 'POST',
+        async: true,
+        dataType: 'JSON',
+        data: {
+            newDbName: newDbName,
+            newTblName: newTblName,
+            dbName: dbName,
+            tableName: tableName
+        }
+    }).done(response => {
+        if (response.type === 'success') {
+            var dataBaseList = $(".database-list");
+            var parent = '';
+            $.each(dataBaseList, function (k, v) {
+                if (newDbName === $(v).attr("data-base")) {
+                    parent = $(v);
+                }
+            });
+            var tablesList = parent.find(".tables-list");
+
+            setTimeout(load, 300);
+            function load() {
+                loadContent.hide();
+                addTable(tablesList, newTblName, newDbName);
+                modalToggle(`Table '${dbName}'.'${tableName}' has been copied to '${newDbName}'.'${newTblName}'.
+                             Privileges have been adjusted`);
+                dbName = newDbName;
+                tableName = newTblName;
+            }
+        }
+    }).fail(error => {
+        console.log(error);
+    })
+});
+
+$("#move-tbl-submit").click(function (event) {
+    event.preventDefault();
+    newDbName = $("#moveDb > option:selected").val();
+    newTblName = $("#moveTblName").val();
+    loadContent.show();
+
+    $.ajax({
+        url: 'tables/move',
+        type: 'POST',
+        async: true,
+        dataType: 'JSON',
+        data: {
+            newDbName: newDbName,
+            newTblName: newTblName,
+            dbName: dbName,
+            tableName: tableName
+        }
+    }).done(response => {
+        if (response.type === 'success') {
+            setTimeout(load, 300);
+            function load() {
+                loadContent.hide();
+                var dataBaseList = $(".database-list");
+                var parent = '';
+                $.each(dataBaseList, function (k, v) {
+                    if (newDbName === $(v).attr("data-base")) {
+                        parent = $(v);
+                    }
+                });
+                var tablesList = parent.find(".tables-list");
+
+                addTable(tablesList, newTblName, newDbName);
+                removeTable(tableName, dbName);
+
+                modalToggle(`Table '${dbName}'.'${tableName}' has been moved to '${newDbName}'.'${newTblName}'.
+                             Privileges have been adjusted`);
+            }
+        }
+    }).fail(error => {
+        console.log(error);
+    })
+});
 
 $("#save-table").click(function (event) {
     event.preventDefault();
@@ -325,19 +457,14 @@ $("#save-table").click(function (event) {
             setTimeout(load, 300);
             function load() {
                 loadContent.hide();
-                if ($(tablesList).find('*').length == 0) {
-                    var newTbl = newTable();
-                    $(tablesList).append(newTbl);
-                }
-                var li   = document.createElement('LI');
-                var icon = '<i class="far fa-list-alt"></i>';
-                setAttributes(li, {"class": "table-name new-name", "data-table": tableName, "data-base": dbName});
-                li.innerHTML = "‐‐‐" + icon + " " + `<span>${tableName}</span>`;
-                tablesList.append(li);
-
+                addTable(tablesList, tableName, dbName);
                 tablesStructure(response.data, dbName, tableName);
                 modalToggle(`Table '${tableName}' has been created`);
             };
+        }
+        else if (response.type === 'error') {
+            loadContent.hide();
+            alert(response.data);
         }
     }).fail(error => {
         console.log(error);
@@ -405,6 +532,8 @@ $("section").on('click','#update-tbl-submit',function (event){
                     $("#tblName").val(newTblName);
                     $(".open-table").attr("data-base", dbName);
                     $(".open-table").attr("data-table", newTblName);
+                    $("#copyTblName").val(newTblName);
+                    $("#moveTblName").val(newTblName);
                     modalToggle(`Table '${tableName}' has been renamed`);
                     tableName = newTblName;
                 }
@@ -448,25 +577,7 @@ $("section").on('click', '#confirm-tbl-delete', function (event) {
             setTimeout(load, 300);
             function load() {
                 loadContent.hide();
-                var ul =$(".tables-list");
-                var li = $(".new-name");
-                var table = '';
-                var tablesList = '';
-                $.each(li, function (k, v) {
-                    if (tableName === $(v).attr("data-table")) {
-                        table = $(v);
-                    }
-                });
-                $.each(ul, function (k, v) {
-                    if (dbName === $(v).attr('data-base')) {
-                        tablesList = $(v);
-                    }
-                });
-                table.remove();
-                if ($(tablesList).find('*').length <= 2) {
-                    var newTbl = $(".new-table");
-                    $(tablesList).find($(newTbl)).remove();
-                }
+                removeTable(tableName, dbName);
                 article.hide();
                 $("#new-table").show();
                 $("#tableName").val('');
@@ -691,6 +802,40 @@ $("section").on('click', '#save-insert', function (event){
         console.log(error);
     })
 })
+
+function addTable(tblList, tbl, db) {
+    if ($(tblList).find('*').length == 0) {
+        var newTbl = newTable();
+        $(tblList).append(newTbl);
+    }
+    var li   = document.createElement('LI');
+    var icon = '<i class="far fa-list-alt"></i>';
+    setAttributes(li, {"class": "table-name new-name", "data-table": tbl, "data-base": db});
+    li.innerHTML = "‐‐‐" + icon + " " + `<span>${tbl}</span>`;
+    tblList.append(li);
+}
+
+function removeTable(tbl, db) {
+    var ul =$(".tables-list");
+    var li = $(".new-name");
+    var table = '';
+    var tablesList = '';
+    $.each(li, function (k, v) {
+        if (tbl === $(v).attr("data-table")) {
+            table = $(v);
+        }
+    });
+    $.each(ul, function (k, v) {
+        if (db === $(v).attr('data-base')) {
+            tablesList = $(v);
+        }
+    });
+    $(tablesList).find($(table)).remove();
+    if ($(tablesList).find('*').length <= 2) {
+        var newTbl = $(".new-table");
+        $(tablesList).find($(newTbl)).remove();
+    }
+}
 
 function tablesStructure(fields, db, table) {
     $(".field-data").remove();

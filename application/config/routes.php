@@ -61,6 +61,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$route['tables/delete'] = 'tables_controller/delete';
 	$route['tables/truncate'] = 'tables_controller/truncate';
 	$route['tables/structure'] = 'tables_controller/structure';
+	$route['tables/copy'] = 'tables_controller/copy';
+	$route['tables/move'] = 'tables_controller/move';
 	$route['fields/delete/:num'] = 'fields_controller/delete/$1';
 	$route['fields/data'] = 'fields_controller/data';
 	$route['fields/insert'] = 'fields_controller/insert';
