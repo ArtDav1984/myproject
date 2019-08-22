@@ -104,12 +104,12 @@
 
         <div id="tables-content" class="article">
 
-            <div id="tables-nav">
-                <button id="open-table-browse" class="open-table">Browse</button>
-                <button id="open-table-structure" class="open-table">Structure</button>
-                <button id="open-table-insert" class="open-table">Insert</button>
-                <button id="open-table-operations" class="open-table">Operations</button>
-            </div>
+            <ul id="tables-nav">
+                <li id="open-table-browse" class="open-table"><i class="far fa-list-alt"></i> Browse</li>
+                <li id="open-table-structure" class="open-table"><i class="fas fa-th-list"></i> Structure</li>
+                <li id="open-table-insert" class="open-table"><i class="fas fa-file-upload"></i> Insert</li>
+                <li id="open-table-operations" class="open-table"><i class="fas fa-key"></i> Operations</li>
+            </ul>
 
             <div id="table-browse" class="tables-content-article">
 

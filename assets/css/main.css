@@ -386,12 +386,22 @@ legend {
 #tables-content {
     padding: 20px;
 }
+#tables-nav {
+    display: flex;
+    background-color: #dddddd;
+}
 .open-table {
-    padding: 10px 5px;
+    padding: 8px 5px;
+    background-color: #dddddd;
+    font-size: 14px;
+    margin-top: 0;
+    color: #00357f;
+    border-left: 1px solid #f8fafc;
+    border-right: 1px solid #f8fafc;
     cursor: pointer;
 }
 .active {
-    background-color: transparent;
+    background-color: #f8fafc;
     border: none;
     outline: none;
 }

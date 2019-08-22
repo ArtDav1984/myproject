@@ -224,7 +224,7 @@ $("section").on('click', '.db-name', function () {
     minus.toggle();
 
     if (expended === 'false') {
-    	ul.find('li').remove();
+        ul.find('li').remove();
         loadAside.show();
         $.ajax({
             url     : 'tables',
@@ -397,6 +397,9 @@ $("#move-tbl-submit").click(function (event) {
 
                 modalToggle(`Table '${dbName}'.'${tableName}' has been moved to '${newDbName}'.'${newTblName}'.
                              Privileges have been adjusted`);
+
+                dbName = newDbName;
+                tableName = newTblName;
             }
         }
     }).fail(error => {
@@ -411,7 +414,6 @@ $("#save-table").click(function (event) {
     var lengthField = getFieldValues($(".length-field"));
     var defaultField = getFieldValues($(".default-field option:selected"));
     var indexField = getFieldValues($(".index-field option:selected"));
-    loadContent.show();
 
     $.ajax({
         url: 'tables/create',
@@ -432,6 +434,7 @@ $("#save-table").click(function (event) {
         }
     }).done(response => {
         if (response.type === 'success') {
+            loadContent.show();
             var dataBaseList = $(".database-list");
             var parent = '';
             $.each(dataBaseList, function (k, v) {
@@ -463,7 +466,6 @@ $("#save-table").click(function (event) {
             };
         }
         else if (response.type === 'error') {
-            loadContent.hide();
             alert(response.data);
         }
     }).fail(error => {
@@ -530,10 +532,10 @@ $("section").on('click','#update-tbl-submit',function (event){
                     li.find("span").html(newTblName);
                     li.attr("data-table", newTblName);
                     $("#tblName").val(newTblName);
-                    $(".open-table").attr("data-base", dbName);
-                    $(".open-table").attr("data-table", newTblName);
                     $("#copyTblName").val(newTblName);
                     $("#moveTblName").val(newTblName);
+                    $(".open-table").attr("data-base", dbName);
+                    $(".open-table").attr("data-table", newTblName);
                     modalToggle(`Table '${tableName}' has been renamed`);
                     tableName = newTblName;
                 }
@@ -743,7 +745,7 @@ $("#open-table-insert").click(function(event) {
            tableName: tableName
        }
     }).done(response => {
-        if (response.type = 'success') {
+        if (response.type === 'success') {
             setTimeout(load, 300);
             function load() {
                 loadContent.hide();
@@ -776,7 +778,6 @@ $("#open-table-insert").click(function(event) {
 
 $("section").on('click', '#save-insert', function (event){
     event.preventDefault();
-    loadContent.show();
     var insertData = getFieldValues($(".insert-data"));
 
     $.ajax({
@@ -790,13 +791,17 @@ $("section").on('click', '#save-insert', function (event){
             insertData: insertData
         }
     }).done(response => {
-        if (response.type = 'success') {
+        if (response.type === 'success') {
+            loadContent.show();
             setTimeout(load, 300);
             function load() {
                 loadContent.hide();
                 $(".insert-data").val('');
                 modalToggle('1 row inserted.');
             }
+        }
+        else {
+            alert(response.data);
         }
     }).fail(error => {
         console.log(error);

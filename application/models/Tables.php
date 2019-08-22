@@ -28,31 +28,57 @@
 		{
 			$fieldsArr = array();
 			$errors = array();
-			for ($i = 0; $i < $number_column; $i ++)
-			{
+			$key = array();
+			for ($i = 0; $i < $number_column; $i ++) {
+				
 				if (empty($data_fields['nameField'][$i])) {
 					$errors[] = 'Missing value in the form!';
+				}
+				
+				if ($data_fields['typeField'][$i] == 'INT' && empty($data_fields['lengthField'][$i])) {
+					$length = 11;
+				} else {
+					$length = $data_fields['lengthField'][$i];
+				}
+				
+				if ($data_fields['typeField'][$i] == 'VARCHAR' && empty($data_fields['lengthField'][$i])) {
+					$errors[] = 'Please enter a valid length';
+				} else {
+					$length = $data_fields['lengthField'][$i];
+				}
+				
+				if (!preg_match('/^[0-9]*$/', $data_fields['lengthField'][$i])) {
+					$errors[] = 'Please enter a valid length';
+				}
+				
+				if($data_fields['indexField'][$i] == 'UNIQUE') {
+					$unique = TRUE;
+				} else {
+					$unique = FALSE;
+				}
+				
+				if ($data_fields['indexField'][$i] == 'PRIMARY') {
+					$key[] = $data_fields['nameField'][$i];
+				} else {
+					$key[] = FALSE;
+				}
+				
+				if ($data_fields['defaultField'][$i] == 'CURRENT_TIMESTAMP' && $data_fields['typeField'] == 'DATE') {
+					$default = 'CURRENT_TIMESTAMP';
+					
+				} else if ($data_fields['defaultField'][$i] == 'NULL') {
+					$default = 'NULL';
+				} else {
+					$default = FALSE;
 				}
 				
 				if (!empty($errors)) {
 					return $errors[0];
 				}
 				
-				if ($data_fields['indexField'][$i] !== '---') {
-					$unique = true;
-				} else {
-					$unique = false;
-				}
-				
-				if ($data_fields['defaultField'][$i] !== 'None') {
-					$default = $data_fields['defaultField'][$i];
-				} else {
-					$default = false;
-				}
-				
 				$fieldsArr[$data_fields['nameField'][$i]]  = array(
 					'type'       => $data_fields['typeField'][$i],
-					'constraint' => $data_fields['lengthField'][$i],
+					'constraint' => $length,
 					'default'    => $default,
 					'unique'     => $unique,
 				);
@@ -60,7 +86,7 @@
 			
 			$this->db->query("USE $db_name");
 			$this->dbforge->add_field($fieldsArr);
-			$this->dbforge->add_key($data_fields['nameField'][0], TRUE);
+			$this->dbforge->add_key($key[0], TRUE);
 			if ($this->dbforge->create_table($table_name, TRUE)){
 				return true;
 			}

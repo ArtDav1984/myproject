@@ -73,10 +73,11 @@
 				$insert_data = $this->input->post('insertData');
 				
 				if (isset($db_name) && isset($table_name) && isset($insert_data)) {
-					if ($this->Fields->insertData($db_name, $table_name, $insert_data)) {
+					$insert = $this->Fields->insertData($db_name, $table_name, $insert_data);
+					if ($insert === true) {
 						echo json_encode(['type' => 'success']);
 					} else {
-						echo json_encode(['type' => 'fail']);
+						echo json_encode(['data' => $insert, 'type' => 'error']);
 					}
 				}
 			}

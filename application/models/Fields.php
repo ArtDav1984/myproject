@@ -57,8 +57,17 @@
 		{
 			$this->db->query("USE $db_name");
 			$columns = $this->getTableColumns($table_name, $db_name);
+			$fields = $this->getTableStructure($table_name, $db_name);
 			$data = [];
+			$errors = [];
 			for ($i = 0; $i < count($columns); $i ++) {
+				if($fields[$i]->type == 'int' && !preg_match('/^[0-9]*$/', $insert_data[$i])) {
+					$errors[] = "Please enter a value greater than or equal to -2147483648";
+				}
+				
+				if (!empty($errors)) {
+					return $errors[0];
+				}
 				$data[$columns[$i]] = $insert_data[$i];
 			}
 			if ($this->db->insert($table_name, $data)) {
