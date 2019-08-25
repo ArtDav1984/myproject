@@ -68,6 +68,17 @@
                 <button type="submit" id="db-submit">Create</button>
             </form>
         </div>
+        
+        <div id="db-nav" class="article">
+            <ul>
+                <li id="open-db-browse" class="open-db"><i class="far fa-list-alt"></i> Browse</li>
+                <li id="open-db-operations" class="open-db"><i class="fas fa-th-list"></i> Operations</li>
+            </ul>
+        </div>
+        
+        <div id="db-browse" class="article">
+        
+        </div>
 
         <div id="new-table" class="article">
             <form method="post">
@@ -105,10 +116,10 @@
         <div id="tables-content" class="article">
 
             <ul id="tables-nav">
-                <li id="open-table-browse" class="open-table"><i class="far fa-list-alt"></i> Browse</li>
-                <li id="open-table-structure" class="open-table"><i class="fas fa-th-list"></i> Structure</li>
-                <li id="open-table-insert" class="open-table"><i class="fas fa-file-upload"></i> Insert</li>
-                <li id="open-table-operations" class="open-table"><i class="fas fa-key"></i> Operations</li>
+                <li class="open-table-browse open-table"><i class="far fa-list-alt"></i> Browse</li>
+                <li class="open-table-structure open-table"><i class="fas fa-th-list"></i> Structure</li>
+                <li class="open-table-insert open-table"><i class="fas fa-file-upload"></i> Insert</li>
+                <li class="open-table-operations open-table"><i class="fas fa-key"></i> Operations</li>
             </ul>
 
             <div id="table-browse" class="tables-content-article">
@@ -199,8 +210,8 @@
                     <form method="post">
                         <fieldset>
                             <legend>Delete data or table</legend>
-                            <button id="empty-tbl-submit">Empty the table (TRUNCATE)</button> <br>
-                            <button id="delete-tbl-submit">Delete the table (DROP)</button>
+                            <button class="empty-tbl-submit">Empty the table (TRUNCATE)</button> <br>
+                            <button class="delete-tbl-submit">Delete the table (DROP)</button>
                         </fieldset>
                     </form>
                 </div>

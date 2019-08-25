@@ -10,9 +10,14 @@ var article = $(".article");
 var loadContent = $(".load-content");
 
 $("#create-db").click(function () {
-    article.hide();
-    $("#new-db").show();
-    $("#db-name").val('');
+    loadContent.show();
+    setTimeout(load, 300);
+    function load() {
+        loadContent.hide();
+        article.hide();
+        $("#new-db").show();
+        $("#db-name").val('');
+    }
 });
 
 $("section").on('click', '#db-submit',function (event) {
@@ -51,7 +56,7 @@ $("section").on('click', '#db-submit',function (event) {
                     var option = `<option value="${response.data}">${response.data}</option>`;
                     $("#copyDb").append(option);
                     $("#moveDb").append(option);
-                    modalToggle(`Database '${response.data}' has been created`);
+                    modalToggle(`<i class="fas fa-check"></i> Database '${response.data}' has been created`);
                 }
             }
         }).fail(error => {
@@ -66,16 +71,46 @@ $("section").on('click', '.database', function () {
     var parent = $(this).parent("li");
     dbName = parent.attr("data-base");
     database = $(this);
-    if (dbName !== 'information_schema' && dbName !== 'performance_schema') {
+    loadContent.show();
+    setTimeout(load, 300);
+    function load() {
+        loadContent.hide();
+        $(".table-settings").removeClass('active');
+        var dbBrowse = $(".db-browse");
+        $.each(dbBrowse, function (k, v) {
+            if (dbName === $(v).attr("data-base")) {
+                $(dbBrowse).hide();
+                $(v).show();
+            }
+            else {
+                $(v).hide();
+            }
+        });
         article.hide();
+        $("#db-nav").show();
+        $("#db-browse").show();
+        $(".open-db").removeClass('active');
+        $("#open-db-browse").addClass('active');
+        if (dbName === 'information_schema' || dbName === 'performance_schema') {
+            $("#open-db-operations").hide();
+        } else {
+            $("#open-db-operations").show();
+        }
+    }
+});
+
+$("#open-db-operations").click(function () {
+    loadContent.show();
+    setTimeout(load, 300);
+    function load() {
+        loadContent.hide();
+        article.hide();
+        $("#db-nav").show();
+        $(".open-db").removeClass('active');
+        $("#open-db-operations").addClass('active');
         $("#new-table").show();
         $("#update-db").show();
         $("#del-db").show();
-    } else {
-        dbName = '';
-        $("#db-name").val('');
-        $(article).hide();
-        $("#new-db").show();
     }
 });
 
@@ -121,29 +156,26 @@ $("section").on('click', '#confirm-db-update', function (event) {
                 $(tableName).attr("data-base", response.data);
                 $(tablesList).attr("data-base", response.data);
                 $(tableName).attr("class", "table-name new-name");
+                $(".open-db").attr("data-base", response.data);
 
                 var optionsCopy = $("#copyDb > option");
                 var optionsMove = $("#moveDb > option");
-                var optionCopy = '';
-                var optionMove = '';
                 $.each(optionsCopy, function (k, v) {
                     if (dbName === $(v).val()) {
-                        optionCopy = $(v);
+                        $(v).html(response.data);
+                        $(v).val(response.data);
                     }
                 });
                 $.each(optionsMove, function (k, v) {
                     if (dbName === $(v).val()) {
-                        optionMove = $(v);
+                        $(v).html(response.data);
+                        $(v).val(response.data);
                     }
                 });
-                optionCopy.html(response.data);
-                optionCopy.val(response.data);
-                optionMove.html(response.data);
-                optionMove.val(response.data);
 
                 article.hide();
                 $("#new-table").show();
-                modalToggle(`Database '${dbName}' has been renamed`);
+                modalToggle(`<i class="fas fa-check"></i> Database '${dbName}' has been renamed`);
                 dbName = response.data;
             }
         }
@@ -179,26 +211,22 @@ $("section").on('click', '#confirm-db-delete', function (event) {
                 var parent = database.parent('li').parent('div');
                 var optionsCopy = $("#copyDb > option");
                 var optionsMove = $("#moveDb > option");
-                var optionCopy = '';
-                var optionMove = '';
                 $.each(optionsCopy, function (k, v) {
                     if (dbName === $(v).val()) {
-                        optionCopy = $(v);
+                        $(v).remove();
                     }
                 });
                 $.each(optionsMove, function (k, v) {
                     if (dbName === $(v).val()) {
-                        optionMove = $(v);
+                        $(v).remove();
                     }
                 });
-                $(optionCopy).remove();
-                $(optionMove).remove();
                 $(parent).remove();
                 article.hide();
                 $("#new-db").show();
                 $("#db-name").val('');
 
-                modalToggle('MySQl returned an empty result set (i.e. 0 rows).');
+                modalToggle('<i class="fas fa-check"></i> MySQl returned an empty result set (i.e. 0 rows).');
             }
         }
     }).fail(error => {
@@ -243,12 +271,42 @@ $("section").on('click', '.db-name', function () {
                         var newTbl = newTable();
                         ul.append(newTbl);
                     }
+                    var browse = `<table data-base="${dbName}" class="db-browse"><tr><th>Table</th><th colspan="5">Action</th></tr>`;
                     response.data.forEach(function (table) {
                         var li   = document.createElement('LI');
                         var icon = '<i class="far fa-list-alt"></i>';
                         setAttributes(li, {"class": "table-name new-name", "data-table": table, "data-base": dbName});
                         li.innerHTML = "‐‐‐" + icon + " " + `<span>${table}</span>`;
                         ul.append(li);
+
+                        browse +=    `<tr><td><p class="table-name new-name" data-base="${dbName}" 
+                                      data-table="${table}">${table}</p></td>` +
+                                     `<td><p class="table-name table-settings" data-base="${dbName}" 
+                                             data-table="${table}"><i class="far fa-list-alt"></i> Browse</p></td>` +
+                                     `<td><p class="open-table-structure table-settings" data-base="${dbName}" 
+                                             data-table="${table}"><i class="fas fa-th-list"></i> Structure</p></td>`;
+                        if (dbName !== 'information_schema' && dbName !== 'performance_schema') {
+                           browse += `<td><p class="open-table-insert table-settings" data-base="${dbName}" 
+                                             data-table="${table}"><i class="fas fa-file-upload"></i> Insert</p></td>` +
+                                     `<td><p class="empty-tbl-submit table-settings" data-table="${table}">
+                                          <i class="fas fa-folder-open"></i> Empty</p></td>` +
+                                     `<td><p class="delete-tbl-submit table-settings" data-table="${table}">
+                                          <i class="fas fa-minus-circle"></i> Drop</p></td>` +
+                                     `</tr>`;
+                        }
+                    });
+                    browse += `</table`;
+                    $("#db-browse").append(browse);
+                    $(".open-db").attr("data-base", dbName);
+                    $("#open-db-browse").addClass('database');
+                    var dbBrowse = $(".db-browse");
+                    $.each(dbBrowse, function (k, v) {
+                        if (dbName === $(v).attr("data-base")) {
+                            $(dbBrowse).hide();
+                            $(v).show();
+                        } else {
+                            $(v).hide();
+                        }
                     });
                 }
             } else {
@@ -268,8 +326,13 @@ $("section").on('click', '.db-name', function () {
 $("section").on('click', '.new-table', function () {
     var parent = $(this).parent('ul').parent('div').parent('li');
     dbName = parent.attr("data-base");
-    article.hide();
-    $("#new-table").show();
+    loadContent.show();
+    setTimeout(load, 300);
+    function load() {
+        loadContent.hide();
+        article.hide();
+        $("#new-table").show();
+    }
 });
 
 $("section").on('click','#table-submit',function (event) {
@@ -282,7 +345,12 @@ $("section").on('click','#table-submit',function (event) {
     $("#numberColumn").val(4);
 
     if (tableName !== '' && numberColumn !== '') {
-        addTableFields(numberColumn);
+        loadContent.show();
+        setTimeout(load, 300);
+        function load() {
+            loadContent.hide();
+            addTableFields(numberColumn);
+        }
     } else {
         alert("required field");
     }
@@ -301,21 +369,28 @@ $("section").on('click','#add-submit',function (event) {
     }
 });
 
-$("#open-table-operations").click(function(event) {
+$(".open-table-operations").click(function(event) {
     event.preventDefault();
     dbName = $(this).attr("data-base");
     tableName = $(this).attr("data-table");
+    loadContent.show();
 
-    $(".open-table").removeClass('active');
-    $("#open-table-operations").addClass('active');
-    $(".tables-content-article").hide();
-    article.hide();
-    $("#table-operations").show();
-    $("#tables-content").show();
-    $("#copyTblName").val(tableName);
-    $("#moveTblName").val(tableName);
-    $("#copyDb").val(dbName);
-    $("#moveDb").val(dbName);
+    setTimeout(load, 300);
+    function load() {
+        loadContent.hide();
+        $(".open-table").removeClass('active');
+        $(".open-table-operations").addClass('active');
+        $(".tables-content-article").hide();
+        $(".empty-tbl-submit").attr("data-table", tableName);
+        $(".delete-tbl-submit").attr("data-table", tableName);
+        article.hide();
+        $("#table-operations").show();
+        $("#tables-content").show();
+        $("#copyTblName").val(tableName);
+        $("#moveTblName").val(tableName);
+        $("#copyDb").val(dbName);
+        $("#moveDb").val(dbName);
+    }
 });
 
 $("#copy-tbl-submit").click(function (event) {
@@ -350,7 +425,7 @@ $("#copy-tbl-submit").click(function (event) {
             function load() {
                 loadContent.hide();
                 addTable(tablesList, newTblName, newDbName);
-                modalToggle(`Table '${dbName}'.'${tableName}' has been copied to '${newDbName}'.'${newTblName}'.
+                modalToggle(`<i class="fas fa-check"></i> Table '${dbName}'.'${tableName}' has been copied to '${newDbName}'.'${newTblName}'.
                              Privileges have been adjusted`);
                 dbName = newDbName;
                 tableName = newTblName;
@@ -380,22 +455,23 @@ $("#move-tbl-submit").click(function (event) {
         }
     }).done(response => {
         if (response.type === 'success') {
+            var dataBaseList = $(".database-list");
+            var parent = '';
+            $.each(dataBaseList, function (k, v) {
+                if (newDbName === $(v).attr("data-base")) {
+                    parent = $(v);
+                }
+            });
+            var tablesList = parent.find(".tables-list");
+
             setTimeout(load, 300);
             function load() {
                 loadContent.hide();
-                var dataBaseList = $(".database-list");
-                var parent = '';
-                $.each(dataBaseList, function (k, v) {
-                    if (newDbName === $(v).attr("data-base")) {
-                        parent = $(v);
-                    }
-                });
-                var tablesList = parent.find(".tables-list");
 
                 addTable(tablesList, newTblName, newDbName);
                 removeTable(tableName, dbName);
 
-                modalToggle(`Table '${dbName}'.'${tableName}' has been moved to '${newDbName}'.'${newTblName}'.
+                modalToggle(`<i class="fas fa-check"></i> Table '${dbName}'.'${tableName}' has been moved to '${newDbName}'.'${newTblName}'.
                              Privileges have been adjusted`);
 
                 dbName = newDbName;
@@ -460,9 +536,26 @@ $("#save-table").click(function (event) {
             setTimeout(load, 300);
             function load() {
                 loadContent.hide();
+                var browse = `<table data-base="${dbName}" class="db-browse"><tr><th>Table</th><th colspan="5">Action</th></tr>` +
+                             `<tr><td><p class="table-name new-name" data-base="${dbName}" 
+                                      data-table="${tableName}">${tableName}</p></td>` +
+                             `<td><p class="table-name table-settings" data-base="${dbName}" 
+                                             data-table="${tableName}"><i class="far fa-list-alt"></i> Browse</p></td>` +
+                             `<td><p class="open-table-structure table-settings" data-base="${dbName}" 
+                                             data-table="${tableName}"><i class="fas fa-th-list"></i> Structure</p></td>`;
+                             if (dbName !== 'information_schema' && dbName !== 'performance_schema') {
+                                 browse += `<td><p class="open-table-insert table-settings" data-base="${dbName}" 
+                                             data-table="${tableName}"><i class="fas fa-file-upload"></i> Insert</p></td>` +
+                                 `<td><p class="empty-tbl-submit table-settings" data-table="${tableName}">
+                                          <i class="fas fa-folder-open"></i> Empty</p></td>` +
+                                 `<td><p class="delete-tbl-submit table-settings" data-table="${tableName}">
+                                          <i class="fas fa-minus-circle"></i> Drop</p></td></tr>`;
+                             }
+
+                $("#db-browse").append(browse);
                 addTable(tablesList, tableName, dbName);
                 tablesStructure(response.data, dbName, tableName);
-                modalToggle(`Table '${tableName}' has been created`);
+                modalToggle(`<i class="fas fa-check"></i> Table '${tableName}' has been created`);
             };
         }
         else if (response.type === 'error') {
@@ -473,7 +566,7 @@ $("#save-table").click(function (event) {
     })
 });
 
-$("section").on('click', '#open-table-structure', function (event) {
+$("section").on('click', '.open-table-structure', function (event) {
     event.preventDefault();
     tableName = $(this).attr("data-table");
     dbName = $(this).attr("data-base");
@@ -523,20 +616,21 @@ $("section").on('click','#update-tbl-submit',function (event){
                 function load() {
                     loadContent.hide();
                     var newName = $(".new-name");
-                    var li = '';
                     $.each(newName, function (k, v) {
                         if (tableName === $(v).attr("data-table")) {
-                            li = $(v);
+                            $(v).find("span").html(newTblName);
+                            $(v).attr("data-table", newTblName);
                         }
                     });
-                    li.find("span").html(newTblName);
-                    li.attr("data-table", newTblName);
                     $("#tblName").val(newTblName);
                     $("#copyTblName").val(newTblName);
                     $("#moveTblName").val(newTblName);
                     $(".open-table").attr("data-base", dbName);
                     $(".open-table").attr("data-table", newTblName);
-                    modalToggle(`Table '${tableName}' has been renamed`);
+                    $(".table-settings").attr("data-table", newTblName);
+                    $(".empty-tbl-submit").attr("data-table", newTblName);
+                    $(".delete-tbl-submit").attr("data-table", newTblName);
+                    modalToggle(`<i class="fas fa-check"></i> Table '${tableName}' has been renamed`);
                     tableName = newTblName;
                 }
             }
@@ -548,14 +642,16 @@ $("section").on('click','#update-tbl-submit',function (event){
     }
 });
 
-$("section").on('click','#delete-tbl-submit',function (event){
+$("section").on('click','.delete-tbl-submit',function (event){
     event.preventDefault();
+    tableName = $(this).attr("data-table");
     openModal(`You are about to DESTROY a complete table! Do you really 
               want to execute "DROP TABLE ${tableName}"?`, "confirm-tbl-delete");
 });
 
-$("section").on('click','#empty-tbl-submit',function (event){
+$("section").on('click','.empty-tbl-submit',function (event){
     event.preventDefault();
+    tableName = $(this).attr("data-table");
     openModal(`You are about to TRUNCATE a complete table!
      Do you really want to execute TRUNCATE '${dbName}'.'${tableName}'?`, "confirm-tbl-empty");
 });
@@ -583,7 +679,7 @@ $("section").on('click', '#confirm-tbl-delete', function (event) {
                 article.hide();
                 $("#new-table").show();
                 $("#tableName").val('');
-                modalToggle('MySQl returned an empty result set (i.e. 0 rows).');
+                modalToggle('<i class="fas fa-check"></i> MySQl returned an empty result set (i.e. 0 rows).');
             }
         }
     }).fail(error => {
@@ -611,7 +707,7 @@ $("section").on('click', '#confirm-tbl-empty', function (event) {
             function load() {
                 loadContent.hide();
                 $(".table-fields").remove();
-                modalToggle('MySQl returned an empty result set (i.e. 0 rows).');
+                modalToggle('<i class="fas fa-check"></i> MySQl returned an empty result set (i.e. 0 rows).');
             }
         }
     }).fail(error => {
@@ -672,16 +768,16 @@ $("section").on('click', '.table-name', function () {
                 $(".open-table").attr("data-base", dbName);
                 $(".open-table").attr("data-table", tableName);
                 $(".open-table").removeClass('active');
-                $("#open-table-browse").addClass('active');
-                $("#open-table-browse").addClass('table-name');
+                $(".open-table-browse").addClass('active');
+                $(".open-table-browse").addClass('table-name');
                 article.hide();
                 $(".tables-content-article").hide();
                 if (dbName === 'information_schema' || dbName === 'performance_schema') {
-                    $("#open-table-insert").hide();
-                    $("#open-table-operations").hide();
+                    $(".open-table-insert").hide();
+                    $(".open-table-operations").hide();
                 } else {
-                    $("#open-table-insert").show();
-                    $("#open-table-operations").show();
+                    $(".open-table-insert").show();
+                    $(".open-table-operations").show();
                 }
                 $("#table-browse").show();
                 $("#tables-content").show();
@@ -721,7 +817,7 @@ $("section").on('click', '#confirm-del-field', function (event) {
                 $("#modal").hide();
                 loadContent.hide();
                 $(deleteField).parent('td').parent('tr').remove();
-                modalToggle('1 row affected');
+                modalToggle('<i class="fas fa-check"></i> 1 row affected');
             }
         }
     }).fail(error => {
@@ -729,7 +825,7 @@ $("section").on('click', '#confirm-del-field', function (event) {
     })
 });
 
-$("#open-table-insert").click(function(event) {
+$("section").on('click', '.open-table-insert', function(event) {
     event.preventDefault();
     dbName = $(this).attr("data-base");
     tableName = $(this).attr("data-table");
@@ -750,7 +846,7 @@ $("#open-table-insert").click(function(event) {
             function load() {
                 loadContent.hide();
                 $(".open-table").removeClass('active');
-                $("#open-table-insert").addClass('active');
+                $(".open-table-insert").addClass('active');
                 $(".tables-content-article").hide();
                 article.hide();
                 $("#table-insert").show();
@@ -797,7 +893,7 @@ $("section").on('click', '#save-insert', function (event){
             function load() {
                 loadContent.hide();
                 $(".insert-data").val('');
-                modalToggle('1 row inserted.');
+                modalToggle('<i class="fas fa-check"></i> 1 row inserted.');
             }
         }
         else {
@@ -823,23 +919,18 @@ function addTable(tblList, tbl, db) {
 function removeTable(tbl, db) {
     var ul =$(".tables-list");
     var li = $(".new-name");
-    var table = '';
-    var tablesList = '';
-    $.each(li, function (k, v) {
-        if (tbl === $(v).attr("data-table")) {
-            table = $(v);
-        }
-    });
     $.each(ul, function (k, v) {
         if (db === $(v).attr('data-base')) {
-            tablesList = $(v);
+			$.each(li, function (key, val) {
+				if (tbl === $(val).attr("data-table")) {
+					$(v).find($(val)).remove();
+					if ($(v).find('*').length <= 2) {
+						$(v).find($(".new-table")).remove();
+					}
+				}
+			});
         }
     });
-    $(tablesList).find($(table)).remove();
-    if ($(tablesList).find('*').length <= 2) {
-        var newTbl = $(".new-table");
-        $(tablesList).find($(newTbl)).remove();
-    }
 }
 
 function tablesStructure(fields, db, table) {
@@ -858,8 +949,8 @@ function tablesStructure(fields, db, table) {
     $(".open-table").attr("data-base", db);
     $(".open-table").attr("data-table", table);
     $(".open-table").removeClass('active');
-    $("#open-table-structure").addClass('active');
-    $("#open-table-browse").addClass('table-name');
+    $(".open-table-structure").addClass('active');
+    $(".open-table-browse").addClass('table-name');
     article.hide();
     $(".tables-content-article").hide();
     $("#table-structure").show();

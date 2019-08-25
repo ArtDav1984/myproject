@@ -120,11 +120,29 @@ ul {
 .tables-list {
     margin-left: -1px;
 }
-.table-name, .new-table {
+.table-name,
+.new-table {
     font-size: 12px;
     margin-top: 5px;
     color: #848696;
     cursor: pointer;
+}
+#db-browse table tr td p {
+    font-size: 14px;
+    cursor: pointer;
+    color: #00357f;
+    margin-top: 0;
+}
+#db-browse table tr td p:hover {
+    text-decoration: underline;
+}
+#db-browse table tr td .delete-tbl-submit:hover,
+#db-browse table tr td .empty-tbl-submit:hover {
+    background-color: transparent;
+}
+.table-name span:hover,
+.new-table span:hover {
+    text-decoration: underline;
 }
 .hide-line {
     width: 350px;
@@ -251,22 +269,22 @@ legend {
     height: 20px;
 }
 #delete-db-submit,
-#delete-tbl-submit,
-#empty-tbl-submit,
+.delete-tbl-submit,
+.empty-tbl-submit,
 .fa-calendar-times {
     color: red;
 }
 #delete-db-submit,
-#delete-tbl-submit,
-#empty-tbl-submit {
+.delete-tbl-submit,
+.empty-tbl-submit {
     background-color: transparent;
     border: none;
     outline: none;
     cursor: pointer;
 }
 #delete-db-submit:hover,
-#delete-tbl-submit:hover,
-#empty-tbl-submit:hover {
+.delete-tbl-submit:hover,
+.empty-tbl-submit:hover {
     text-decoration: underline;
     color: #fff;
     background-color: red;
@@ -383,14 +401,21 @@ legend {
 .tables-content-article {
     display: none;
 }
-#tables-content {
+#tables-content,
+#db-nav,
+#db-browse {
     padding: 20px;
 }
-#tables-nav {
+#tables-nav,
+#db-nav ul {
     display: flex;
     background-color: #dddddd;
 }
-.open-table {
+.db-browse {
+    display: none;
+}
+.open-table,
+.open-db {
     padding: 8px 5px;
     background-color: #dddddd;
     font-size: 14px;
@@ -407,7 +432,7 @@ legend {
 }
 #response-modal {
     width: 380px;
-    height: 80px;
+    padding: 5px;
     background-color: yellow;
     border-radius: 5px;
     position: fixed;
@@ -417,9 +442,6 @@ legend {
     display: none;
 }
 #m-body {
-    width: 97%;
-    height: 60px;
-    margin: 10px auto;
     border: 1px solid #caf9ee;
     border-radius: 5px;
     background-color: #edfdf9;
@@ -444,4 +466,8 @@ legend {
 .insert-text {
     width: 250px;
     height: 30px;
+}
+.fa-check {
+    color: green;
+    font-size: 25px;
 }
