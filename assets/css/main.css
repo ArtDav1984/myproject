@@ -34,11 +34,7 @@ ul {
     list-style-type: none;
 }
 #aside h1 {
-    color: #f0ad4e;
     text-align: center;
-}
-#aside h1 span {
-    color: #86c3ff;
 }
 .database-list {
     margin-left: -8px;
@@ -123,7 +119,6 @@ ul {
 .table-name,
 .new-table {
     font-size: 12px;
-    margin-top: 5px;
     color: #848696;
     cursor: pointer;
 }
@@ -183,6 +178,11 @@ tr:nth-child(odd) {
     background-color: #f8fafc;
     position: relative;
     width: 83%;
+}
+#content-header {
+    padding: 5px;
+    font-size: 13px;
+    background-color: #b0b7c8;
 }
 #new-table,
 #update-db,

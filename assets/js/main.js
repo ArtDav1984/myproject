@@ -67,38 +67,6 @@ $("section").on('click', '#db-submit',function (event) {
     }
 });
 
-$("section").on('click', '.database', function () {
-    var parent = $(this).parent("li");
-    dbName = parent.attr("data-base");
-    database = $(this);
-    loadContent.show();
-    setTimeout(load, 300);
-    function load() {
-        loadContent.hide();
-        $(".table-settings").removeClass('active');
-        var dbBrowse = $(".db-browse");
-        $.each(dbBrowse, function (k, v) {
-            if (dbName === $(v).attr("data-base")) {
-                $(dbBrowse).hide();
-                $(v).show();
-            }
-            else {
-                $(v).hide();
-            }
-        });
-        article.hide();
-        $("#db-nav").show();
-        $("#db-browse").show();
-        $(".open-db").removeClass('active');
-        $("#open-db-browse").addClass('active');
-        if (dbName === 'information_schema' || dbName === 'performance_schema') {
-            $("#open-db-operations").hide();
-        } else {
-            $("#open-db-operations").show();
-        }
-    }
-});
-
 $("#open-db-operations").click(function () {
     loadContent.show();
     setTimeout(load, 300);
@@ -157,6 +125,7 @@ $("section").on('click', '#confirm-db-update', function (event) {
                 $(tablesList).attr("data-base", response.data);
                 $(tableName).attr("class", "table-name new-name");
                 $(".open-db").attr("data-base", response.data);
+                $("#content-header > p > span").html(response.data);
 
                 var optionsCopy = $("#copyDb > option");
                 var optionsMove = $("#moveDb > option");
@@ -222,6 +191,7 @@ $("section").on('click', '#confirm-db-delete', function (event) {
                     }
                 });
                 $(parent).remove();
+                $("#content-header > p > span").html('');
                 article.hide();
                 $("#new-db").show();
                 $("#db-name").val('');
@@ -244,6 +214,7 @@ $("section").on('click', '.db-name', function () {
     var minus = parent.find('.fa-minus-square');
     var ul = parent.find('.tables-list');
     var expended = parent.attr('aria-expanded');
+    var check = $(this).attr("aria-checked");
     var loadAside = parent.find('.load-aside');
     var dbName = parent.attr("data-base");
 
@@ -260,7 +231,7 @@ $("section").on('click', '.db-name', function () {
             async   : true,
             dataType: "JSON",
             headers    : {
-                dbName: dbName
+                dbName: dbName,
             }
         }).done(response => {
             if (response.type === 'success') {
@@ -274,12 +245,13 @@ $("section").on('click', '.db-name', function () {
                     var browse = `<table data-base="${dbName}" class="db-browse"><tr><th>Table</th><th colspan="5">Action</th></tr>`;
                     response.data.forEach(function (table) {
                         var li   = document.createElement('LI');
-                        var icon = '<i class="far fa-list-alt"></i>';
+						var icon = '<i class="far fa-list-alt"></i>';
                         setAttributes(li, {"class": "table-name new-name", "data-table": table, "data-base": dbName});
                         li.innerHTML = "‐‐‐" + icon + " " + `<span>${table}</span>`;
                         ul.append(li);
 
-                        browse +=    `<tr><td><p class="table-name new-name" data-base="${dbName}" 
+                        browse +=    `<tr class="table-row" data-table="${table}" data-base="${dbName}"><td>
+                                      <p class="table-name new-name" data-base="${dbName}" 
                                       data-table="${table}">${table}</p></td>` +
                                      `<td><p class="table-name table-settings" data-base="${dbName}" 
                                              data-table="${table}"><i class="far fa-list-alt"></i> Browse</p></td>` +
@@ -298,16 +270,18 @@ $("section").on('click', '.db-name', function () {
                     browse += `</table`;
                     $("#db-browse").append(browse);
                     $(".open-db").attr("data-base", dbName);
-                    $("#open-db-browse").addClass('database');
-                    var dbBrowse = $(".db-browse");
-                    $.each(dbBrowse, function (k, v) {
-                        if (dbName === $(v).attr("data-base")) {
-                            $(dbBrowse).hide();
-                            $(v).show();
-                        } else {
-                            $(v).hide();
-                        }
-                    });
+                    $("#open-db-browse").attr('data-base');
+                    if (check === 'false') {
+                        var dbBrowse = $(".db-browse");
+                        $.each(dbBrowse, function (k, v) {
+                            if (dbName === $(v).attr("data-base")) {
+                                $(dbBrowse).hide();
+                                $(v).show();
+                            } else {
+                                $(v).hide();
+                            }
+                        });
+                    }
                 }
             } else {
                 setTimeout(unload, 300);
@@ -322,6 +296,42 @@ $("section").on('click', '.db-name', function () {
 
     parent.attr('aria-expanded', 'true');
 });
+
+$("section").on('click', '.database', function () {
+    var parent = $(this).parent("li");
+    dbName = parent.attr("data-base");
+    database = $(this);
+    loadContent.show();
+    setTimeout(load, 300);
+    function load() {
+        loadContent.hide();
+        $(".table-settings").removeClass('active');
+        var dbBrowse = $(".db-browse");
+        $.each(dbBrowse, function (k, v) {
+            if (dbName === $(v).attr("data-base")) {
+                $(dbBrowse).hide();
+                $(v).show();
+            }
+            else {
+                $(v).hide();
+            }
+        });
+        article.hide();
+        var icon = '<i class="fas fa-database"></i>';
+        $("#content-header > p > span").html(' ' + icon + ' ' + dbName);
+        $("#db-nav").show();
+        $("#db-browse").show();
+        $(".open-db").removeClass('active');
+        $("#open-db-browse").addClass('active');
+        if (dbName === 'information_schema' || dbName === 'performance_schema') {
+            $("#open-db-operations").hide();
+        } else {
+            $("#open-db-operations").show();
+        }
+    }
+});
+
+
 
 $("section").on('click', '.new-table', function () {
     var parent = $(this).parent('ul').parent('div').parent('li');
@@ -537,7 +547,8 @@ $("#save-table").click(function (event) {
             function load() {
                 loadContent.hide();
                 var browse = `<table data-base="${dbName}" class="db-browse"><tr><th>Table</th><th colspan="5">Action</th></tr>` +
-                             `<tr><td><p class="table-name new-name" data-base="${dbName}" 
+                             `<tr class="table-row" data-table="${tableName}" data-base="${dbName}"><td>
+                                      <p class="table-name new-name" data-base="${dbName}" 
                                       data-table="${tableName}">${tableName}</p></td>` +
                              `<td><p class="table-name table-settings" data-base="${dbName}" 
                                              data-table="${tableName}"><i class="far fa-list-alt"></i> Browse</p></td>` +
@@ -675,6 +686,12 @@ $("section").on('click', '#confirm-tbl-delete', function (event) {
             setTimeout(load, 300);
             function load() {
                 loadContent.hide();
+                var tableRow = $(".table-row");
+                $.each(tableRow, function (k, v) {
+                   if (tableName === $(v).attr("data-table") && dbName === $(v).attr("data-base")) {
+                       $(v).remove();
+                   }
+                });
                 removeTable(tableName, dbName);
                 article.hide();
                 $("#new-table").show();
@@ -739,7 +756,9 @@ $("section").on('click', '.table-name', function () {
                 var thDel       = document.createElement('TH');
                 var tHead    = document.createElement('TR');
                 thDel.innerHTML = '';
-                tHead.append(thDel);
+                if (dbName !== "information_schema" && dbName !== "performance_schema") {
+                    tHead.append(thDel);
+                }
                 table.append(tHead);
                 response.column.forEach(function (col) {
                     var th       = document.createElement('TH');
@@ -755,7 +774,9 @@ $("section").on('click', '.table-name', function () {
                         ` data-table="${tableName}" data-id="${val.id}">` +
                         '<i class="fas fa-minus-circle"></i> Delete</p>';
                     table.append(tBody);
-                    tBody.append(trDel);
+                    if (dbName !== "information_schema" && dbName !== "performance_schema") {
+                        tBody.append(trDel);
+                    }
                     $.each(val, function (k, v) {
                         var td = document.createElement('TD');
                         td.innerHTML = v;
@@ -902,7 +923,7 @@ $("section").on('click', '#save-insert', function (event){
     }).fail(error => {
         console.log(error);
     })
-})
+});
 
 function addTable(tblList, tbl, db) {
     if ($(tblList).find('*').length == 0) {
@@ -921,14 +942,14 @@ function removeTable(tbl, db) {
     var li = $(".new-name");
     $.each(ul, function (k, v) {
         if (db === $(v).attr('data-base')) {
-			$.each(li, function (key, val) {
-				if (tbl === $(val).attr("data-table")) {
-					$(v).find($(val)).remove();
-					if ($(v).find('*').length <= 2) {
-						$(v).find($(".new-table")).remove();
-					}
-				}
-			});
+            $.each(li, function (key, val) {
+                if (tbl === $(val).attr("data-table")) {
+                    $(v).find($(val)).remove();
+                    if ($(v).find('*').length <= 2) {
+                        $(v).find($(".new-table")).remove();
+                    }
+                }
+            });
         }
     });
 }

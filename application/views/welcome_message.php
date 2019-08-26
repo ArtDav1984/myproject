@@ -13,7 +13,7 @@
 <section>
 
     <div id="aside">
-        <h1><em><span>php</span>MyAdmin</em></h1>
+        <h1><a href="/"><img src="<?php echo base_url() ?>assets/img/logo_left.png"></a></h1>
 
         <ul class="databases">
 
@@ -27,16 +27,17 @@
 				
 				<?php foreach ($databases as $database => $item) : ?>
 
-                    <div class="vertical-line">
-                        <li class="database-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
-                            <image class="load-aside" src="<?php echo base_url() ?>assets/img/load.gif" />
-                            <i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i><span class="horizontal-line">-</span><i class="fas fa-database"></i>
-                            <span class="db-name database"><?= $item['Database']; ?></span>
-                            <div class="hide-line">
-                                <ul class="tables-list" data-base="<?= $item['Database']; ?>"> </ul>
-                            </div>
-                        </li>
-                    </div>
+
+					<div class="vertical-line">
+						<li class="database-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
+							<image class="load-aside" src="<?php echo base_url() ?>assets/img/load.gif" />
+							<i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i><span class="horizontal-line">-</span><i class="fas fa-database"></i>
+							<span class="db-name database"><?= $item['Database']; ?></span>
+							<div class="hide-line">
+								<ul class="tables-list" data-base="<?= $item['Database']; ?>"> </ul>
+							</div>
+						</li>
+					</div>
 				
 				<?php endforeach; ?>
 			
@@ -46,6 +47,11 @@
     </div>
 
     <div id="content">
+        
+        <div id="content-header">
+           <p><img src="<?php echo base_url() ?>assets/img/s_host.png"> Server: 127.0.0.1 <span></span></p>
+        </div>
+        
         <div id="new-db" class="article">
             <form method="post">
                 <label for="db-name">
@@ -71,7 +77,7 @@
         
         <div id="db-nav" class="article">
             <ul>
-                <li id="open-db-browse" class="open-db"><i class="far fa-list-alt"></i> Browse</li>
+                <li id="open-db-browse" class="open-db"><i class="far fa-list-alt"></i> <span class="database">Structure</span></li>
                 <li id="open-db-operations" class="open-db"><i class="fas fa-th-list"></i> Operations</li>
             </ul>
         </div>
