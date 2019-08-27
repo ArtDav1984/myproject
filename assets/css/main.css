@@ -22,15 +22,18 @@ section {
     width: 100%;
 }
 #aside {
-    padding: 20px;
+    padding: 5px;
     width: 17%;
-    height: 760px;
+    height: 710px;
     overflow-y: auto;
     overflow-x: hidden;
     background-color: #f4f5fd;
     border-right: 3px solid #9ca1aa;
 }
-ul {
+.aside-icons {
+    text-align: center;
+}
+li {
     list-style-type: none;
 }
 #aside h1 {
@@ -39,11 +42,30 @@ ul {
 .database-list {
     margin-left: -8px;
 }
-.article {
+.article,
+.databases-article {
     display: none;
 }
-#new-db {
+#home {
     display: block;
+}
+#general-settings,
+#appearance-settings {
+    width: 98%;
+    margin: 20px auto 0;
+    border: 1px solid #a8b0c2;
+    border-radius: 5px;
+}
+.general-settings-head,
+.appearance-settings-head {
+    background-color: #b0b7c8;
+    padding: 5px;
+    color: #fff;
+}
+.general-settings-body,
+.appearance-settings-body {
+    background-color: #e4e7ec;
+    padding: 25px 20px 35px;
 }
 #create-db {
     cursor: pointer;
@@ -97,15 +119,12 @@ ul {
 .tables-list {
     display: none;
 }
-.fa-minus-square,
-.fa-plus-square,
-.horizontal-line,
-.fa-database {
+.horizontal-line {
     color: #848696;
 }
-.fa-plus-square,
-.fa-minus-square {
-    background-color: white;
+.db-name,
+#create-db {
+    font-size: 13px;
 }
 .db-name:hover {
     cursor: pointer;
@@ -142,15 +161,17 @@ ul {
 .hide-line {
     width: 350px;
     border-left: 1px solid #848696;
-    margin-left: 25px;
+    margin-left: 30px;
 }
 .databases {
     margin-top: 20px;
 }
+.content-list {
+    padding-left: 5px;
+}
 .databases .vertical-line {
     border-left: 1px solid #848696;
     margin-left: 10px;
-    padding-bottom: 5px;
     width: 350px;
 }
 .databases .vertical-line:last-child {
@@ -183,6 +204,7 @@ tr:nth-child(odd) {
     padding: 5px;
     font-size: 13px;
     background-color: #b0b7c8;
+    display: flex;
 }
 #new-table,
 #update-db,
@@ -357,9 +379,15 @@ legend {
 }
 .load-content {
     position: fixed;
-    left: 50%;
+    left: 40%;
     top: 40%;
     display: none;
+    background-color: #ffe8a6;
+    border: 1px solid #ffcb37;
+    border-radius: 3px;
+    text-align: center;
+    padding: 5px;
+    width: 400px;
 }
 .name-field,
 .type-field,
@@ -401,12 +429,16 @@ legend {
 .tables-content-article {
     display: none;
 }
-#tables-content,
-#db-nav,
-#db-browse {
+#table-browse,
+#table-structure,
+#table-insert,
+#db-browse,
+#databases-table,
+#collations {
     padding: 20px;
 }
 #tables-nav,
+#home-nav,
 #db-nav ul {
     display: flex;
     background-color: #dddddd;
@@ -415,7 +447,8 @@ legend {
     display: none;
 }
 .open-table,
-.open-db {
+.open-db,
+.open-home {
     padding: 8px 5px;
     background-color: #dddddd;
     font-size: 14px;
@@ -470,4 +503,7 @@ legend {
 .fa-check {
     color: green;
     font-size: 25px;
+}
+.fa-long-arrow-alt-right {
+    display: none;
 }

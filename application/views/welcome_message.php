@@ -14,11 +14,20 @@
 
     <div id="aside">
         <h1><a href="/"><img src="<?php echo base_url() ?>assets/img/logo_left.png"></a></h1>
+        
+        <div class="aside-icons">
+            <a href="/"><img src="<?php echo base_url() ?>assets/img/b_home.png" alt=""></a>
+            <a href="/"><img src="<?php echo base_url() ?>assets/img/s_loggoff.png" alt=""></a>
+            <a href="/"><img src="<?php echo base_url() ?>assets/img/b_docs.png" alt=""></a>
+            <a href="/"><img src="<?php echo base_url() ?>assets/img/b_sqlhelp.png" alt=""></a>
+            <a href="/"><img src="<?php echo base_url() ?>assets/img/s_cog.png" alt=""></a>
+            <a href="/"><img src="<?php echo base_url() ?>assets/img/s_reload.png" alt=""></a>
+        </div>
 
         <ul class="databases">
 
             <div class="vertical-line">
-                <li class="create-db"><span class="horizontal-line">--</span><i class="fas fa-database"></i>
+                <li class="create-db"><span class="horizontal-line">--</span><img src="<?php echo base_url() ?>assets/img/b_newdb.png">
                     <span id="create-db">New</span>
                 </li>
             </div>
@@ -27,17 +36,16 @@
 				
 				<?php foreach ($databases as $database => $item) : ?>
 
-
-					<div class="vertical-line">
-						<li class="database-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
-							<image class="load-aside" src="<?php echo base_url() ?>assets/img/load.gif" />
-							<i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i><span class="horizontal-line">-</span><i class="fas fa-database"></i>
-							<span class="db-name database"><?= $item['Database']; ?></span>
-							<div class="hide-line">
-								<ul class="tables-list" data-base="<?= $item['Database']; ?>"> </ul>
-							</div>
-						</li>
-					</div>
+                    <div class="vertical-line">
+                        <li class="database-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
+                            <img class="load-aside" src="<?php echo base_url() ?>assets/img/load.gif" />
+                            <img class="fa-plus-square db-name" aria-checked="true" src="<?php echo base_url() ?>assets/img/b_plus.png"><img class="fa-minus-square db-name" aria-checked="true" src="<?php echo base_url() ?>assets/img/b_minus.png"><span class="horizontal-line">-</span><img src="<?php echo base_url() ?>assets/img/s_db.png">
+                            <span class="db-name database" aria-checked="false"><?= $item['Database']; ?></span>
+                            <div class="hide-line">
+                                <ul class="tables-list" data-base="<?= $item['Database']; ?>"> </ul>
+                            </div>
+                        </li>
+                    </div>
 				
 				<?php endforeach; ?>
 			
@@ -49,13 +57,92 @@
     <div id="content">
         
         <div id="content-header">
-           <p><img src="<?php echo base_url() ?>assets/img/s_host.png"> Server: 127.0.0.1 <span></span></p>
+           <p>
+               <img src="<?php echo base_url() ?>assets/img/s_host.png"> Server: 127.0.0.1 <span></span>
+           </p>
         </div>
         
-        <div id="new-db" class="article">
+        
+        <ul id="home-nav" class="article">
+            <li id="open-databases" class="open-home"><img src="<?php echo base_url() ?>assets/img/s_db.png"> Databases</li>
+            <li id="open-charsets" class="open-home"><img src="<?php echo base_url() ?>assets/img/s_asci.png"> Charsets</li>
+        </ul>
+
+        <div id="home" class="article databases-article">
+            <div id="general-settings">
+                <div class="general-settings-head">
+                    <h3>General settings</h3>
+                </div>
+                <div class="general-settings-body">
+                   <p>
+                       <img src="<?php echo base_url() ?>assets/img/s_asci.png">
+                       Server connection collation:
+                       <select id="charsets" name="charsets" aria-expanded="false">
+		
+		                   <?php if (!is_null($chars)) : ?>
+			
+			                   <?php foreach ($chars as $char) : ?>
+                                   <option value="<?= $char ?>" class="charset">
+					                   <?= $char ?>
+                                   </option>
+			                   <?php endforeach; ?>
+		
+		                   <?php endif; ?>
+
+                       </select>
+                   </p>
+                </div>
+            </div>
+            
+            <div id="appearance-settings">
+                <div class="appearance-settings-head">
+                    <h3>Appearance settings</h3>
+                </div>
+                <div class="appearance-settings-body">
+                    <p>
+                        <img src="<?php echo base_url() ?>assets/img/s_lang.png">
+                        Language:
+                        <select>
+                            <option value="English">English</option>
+                            <option value="Dansk-Danish">Dansk-Danish</option>
+                            <option value="Nederlands-Dutch">Nederlands-Dutch</option>
+                            <option value="English(United-Kingdom)">English(United-Kingdom)</option>
+                            <option value="Easti-Estonian">Easti-Estonian</option>
+                            <option value="Suomi-Finnish">Suomi-Finnish</option>
+                            <option value="Francais-French">Francais-French</option>
+                            <option value="Galego-Galician">Galego-Galician</option>
+                            <option value="Deutsch-German">Deutsch-German</option>
+                            <option value="Magyar-Hungarian">Magyar-Hungarian</option>
+                            <option value="Bahasa Indonesia-Indonesian Interlingua">Bahasa Indonesia-Indonesian Interlingua</option>
+                            <option value="Italiano-Italian">Italiano-Italian</option>
+                            <option value="Lietuviu-Lithuanian">Lietuviu-Lithuanian</option>
+                            <option value="Norsk-Norwegian">Norsk-Norwegian</option>
+                            <option value="Polski-Polish">Polski-Polish</option>
+                            <option value="Srpski-Serbian(latin)">Srpski-Serbian(latin)</option>
+                            <option value="Espanol-Spanish">Espanol-Spanish</option>
+                            <option value="Svenska-Swedish">Svenska-Swedish</option>
+                            <option value="Русский-Russian">Русский-Russian</option>
+                            <option value="Հայերեն-Armenian">Հայերեն-Armenian</option>
+                        </select>
+                    </p>
+                    <br>
+                    <p>
+                        <img src="<?php echo base_url() ?>assets/img/s_theme.png">
+                        Theme:
+                        <select>
+                            <option value="pmahomme">pmahomme</option>
+                            <option value="Original">Original</option>
+                        </select>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div id="new-db" class="article databases-article">
             <form method="post">
                 <label for="db-name">
-                    <i class="fas fa-database"></i> Create Database
+                    <img src="<?php echo base_url() ?>assets/img/b_newdb.png"> Create Database
                 </label> <br /><br />
                 <input type="text" name="name" id="db-name" placeholder="Database name" />
                 <select id="charsets" name="charsets" aria-expanded="false">
@@ -75,10 +162,46 @@
             </form>
         </div>
         
+        <div id="databases-table" class="article databases-article">
+            <table>
+                <tr><th>Database</th></tr>
+	            <?php if (!is_null($databases)) : ?>
+		
+		            <?php foreach ($databases as $database => $item) : ?>
+
+                        <tr>
+                            <td>
+                                <li class="database-list content-list" aria-expanded="false" data-base="<?= $item['Database']; ?>">
+                                    <span class="db-name database" aria-checked="false"><?= $item['Database']; ?></span>
+                                </li>
+                            </td>
+                        </tr>
+		
+		            <?php endforeach; ?>
+	
+	            <?php endif; ?>
+            </table>
+        </div>
+        
+        <div id="collations" class="databases-article">
+            <table>
+                <tr><th>Collation</th></tr>
+	            <?php if (!is_null($chars)) : ?>
+		
+		            <?php foreach ($chars as $char) : ?>
+                        
+                        <tr><td><?= $char; ?></td></tr>
+                        
+		            <?php endforeach; ?>
+	
+	            <?php endif; ?>
+            </table>
+        </div>
+        
         <div id="db-nav" class="article">
             <ul>
-                <li id="open-db-browse" class="open-db"><i class="far fa-list-alt"></i> <span class="database">Structure</span></li>
-                <li id="open-db-operations" class="open-db"><i class="fas fa-th-list"></i> Operations</li>
+                <li id="open-db-browse" class="open-db"><img src="<?php echo base_url() ?>assets/img/b_props.png"> <span class="database">Structure</span></li>
+                <li id="open-db-operations" class="open-db"><img src="<?php echo base_url() ?>assets/img/b_tblops.png"> Operations</li>
             </ul>
         </div>
         
@@ -89,7 +212,7 @@
         <div id="new-table" class="article">
             <form method="post">
                 <fieldset>
-                    <legend><i class="far fa-list-alt"></i> Create table</legend>
+                    <legend><img src="<?php echo base_url() ?>assets/img/b_table_add.png"> Create table</legend>
                     <span>Name:</span> <input type="text" name="tableName" id="tableName"/>
                     <span id="columns-title">Number of columns:</span>
                     <input type="number" name="numberColumn" id="numberColumn" value="4"/>
@@ -102,7 +225,7 @@
         <div id="update-db" class="article">
             <form method="post">
                 <fieldset>
-                    <legend><i class="fas fa-pencil-alt"></i> Rename database to</legend>
+                    <legend><img src="<?php echo base_url() ?>assets/img/b_edit.png"> Rename database to</legend>
                     <input type="text" name="tableName" id="dbName"/>
                     <br /><br />
                     <button type="submit" id="update-db-submit">Go</button>
@@ -113,7 +236,7 @@
         <div id="del-db" class="article">
             <form method="post">
                 <fieldset>
-                    <legend><i class="far fa-calendar-times"></i> Remove database</legend>
+                    <legend><img src="<?php echo base_url() ?>assets/img/b_deltbl.png"> Remove database</legend>
                     <button id="delete-db-submit">Drop the database (DROP)</button>
                 </fieldset>
             </form>
@@ -122,10 +245,10 @@
         <div id="tables-content" class="article">
 
             <ul id="tables-nav">
-                <li class="open-table-browse open-table"><i class="far fa-list-alt"></i> Browse</li>
-                <li class="open-table-structure open-table"><i class="fas fa-th-list"></i> Structure</li>
-                <li class="open-table-insert open-table"><i class="fas fa-file-upload"></i> Insert</li>
-                <li class="open-table-operations open-table"><i class="fas fa-key"></i> Operations</li>
+                <li class="open-table-browse open-table"><img src="<?php echo base_url() ?>assets/img/b_browse.png"> Browse</li>
+                <li class="open-table-structure open-table"><img src="<?php echo base_url() ?>assets/img/b_props.png"> Structure</li>
+                <li class="open-table-insert open-table"><img src="<?php echo base_url() ?>assets/img/b_insrow.png"> Insert</li>
+                <li class="open-table-operations open-table"><img src="<?php echo base_url() ?>assets/img/b_tblops.png"> Operations</li>
             </ul>
 
             <div id="table-browse" class="tables-content-article">
@@ -272,8 +395,8 @@
             </p>
         </div>
     </div>
-
-    <image class="load-content" src="<?php echo base_url() ?>assets/img/load_2.gif" />
+    
+    <div class="load-content">Loading...</div>
 
 </section>
 

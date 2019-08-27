@@ -9,6 +9,31 @@ var numberColumn;
 var article = $(".article");
 var loadContent = $(".load-content");
 
+$("#open-databases").click(function () {
+    loadContent.show();
+    setTimeout(load, 300);
+    function load() {
+        loadContent.hide();
+        $(".databases-article").hide();
+        $("#new-db").show();
+        $("#databases-table").show();
+        $(".open-home").removeClass('active');
+        $("#open-databases").addClass('active');
+    }
+});
+
+$("#open-charsets").click(function () {
+    loadContent.show();
+    setTimeout(load, 300);
+    function load() {
+        loadContent.hide();
+        $(".databases-article").hide();
+        $("#collations").show();
+        $(".open-home").removeClass('active');
+        $("#open-charsets").addClass('active');
+    }
+});
+
 $("#create-db").click(function () {
     loadContent.show();
     setTimeout(load, 300);
@@ -46,9 +71,10 @@ $("section").on('click', '#db-submit',function (event) {
 
                     var newDbLine = '<div class="vertical-line">' +
                         `<li class="database-list" aria-expanded="false" data-base="${response.data}">` +
-                        '<image class="load-aside" src="assets/img/load.gif" />' +
-                        '<i class="fas fa-plus-square db-name"></i><i class="fas fa-minus-square db-name"></i>' +
-                        `<span class="horizontal-line">-</span><i class="fas fa-database"></i>` +
+                        '<img class="load-aside" src="assets/img/load.gif" />' +
+                        '<img class="fa-plus-square db-name" src="assets/img/b_plus.png">' +
+                        '<img class="fa-minus-square db-name" src="assets/img/b_minus.png">' +
+                        `<span class="horizontal-line">-</span><img src="assets/img/s_db.png">` +
                         `<span class="db-name database">&nbsp;${response.data}</span>` +
                         `<div class="hide-line"> <ul class="tables-list" data-base="${response.data}"> </ul> </div> </li> </div>`;
                     $(".databases").append(newDbLine);
@@ -120,12 +146,13 @@ $("section").on('click', '#confirm-db-update', function (event) {
                 var newTable = $(li).find('div').find('ul').find('.new-table');
                 var tableName = $(li).find('div').find('ul').find('.table-name');
                 var tablesList = $(li).find('div').find('ul');
+                var icon = '<img src="assets/img/s_db.png">';
                 $(newTable).attr("data-base", response.data);
                 $(tableName).attr("data-base", response.data);
                 $(tablesList).attr("data-base", response.data);
                 $(tableName).attr("class", "table-name new-name");
                 $(".open-db").attr("data-base", response.data);
-                $("#content-header > p > span").html(response.data);
+                $("#content-header > p > span").html('' + icon + '' +response.data);
 
                 var optionsCopy = $("#copyDb > option");
                 var optionsMove = $("#moveDb > option");
@@ -245,7 +272,7 @@ $("section").on('click', '.db-name', function () {
                     var browse = `<table data-base="${dbName}" class="db-browse"><tr><th>Table</th><th colspan="5">Action</th></tr>`;
                     response.data.forEach(function (table) {
                         var li   = document.createElement('LI');
-						var icon = '<i class="far fa-list-alt"></i>';
+                        var icon = '<img src="assets/img/b_props.png">';
                         setAttributes(li, {"class": "table-name new-name", "data-table": table, "data-base": dbName});
                         li.innerHTML = "‐‐‐" + icon + " " + `<span>${table}</span>`;
                         ul.append(li);
@@ -254,16 +281,16 @@ $("section").on('click', '.db-name', function () {
                                       <p class="table-name new-name" data-base="${dbName}" 
                                       data-table="${table}">${table}</p></td>` +
                                      `<td><p class="table-name table-settings" data-base="${dbName}" 
-                                             data-table="${table}"><i class="far fa-list-alt"></i> Browse</p></td>` +
+                                             data-table="${table}"><img src="assets/img/b_browse.png"> Browse</p></td>` +
                                      `<td><p class="open-table-structure table-settings" data-base="${dbName}" 
-                                             data-table="${table}"><i class="fas fa-th-list"></i> Structure</p></td>`;
+                                             data-table="${table}"><img src="assets/img/b_props.png"> Structure</p></td>`;
                         if (dbName !== 'information_schema' && dbName !== 'performance_schema') {
                            browse += `<td><p class="open-table-insert table-settings" data-base="${dbName}" 
-                                             data-table="${table}"><i class="fas fa-file-upload"></i> Insert</p></td>` +
+                                             data-table="${table}"><img src="assets/img/b_insrow.png"> Insert</p></td>` +
                                      `<td><p class="empty-tbl-submit table-settings" data-table="${table}">
-                                          <i class="fas fa-folder-open"></i> Empty</p></td>` +
+                                          <img src="assets/img/b_empty.png"> Empty</p></td>` +
                                      `<td><p class="delete-tbl-submit table-settings" data-table="${table}">
-                                          <i class="fas fa-minus-circle"></i> Drop</p></td>` +
+                                          <img src="assets/img/b_drop.png"> Drop</p></td>` +
                                      `</tr>`;
                         }
                     });
@@ -317,7 +344,7 @@ $("section").on('click', '.database', function () {
             }
         });
         article.hide();
-        var icon = '<i class="fas fa-database"></i>';
+        var icon = '<img src="assets/img/s_db.png"> ';
         $("#content-header > p > span").html(' ' + icon + ' ' + dbName);
         $("#db-nav").show();
         $("#db-browse").show();
@@ -551,16 +578,16 @@ $("#save-table").click(function (event) {
                                       <p class="table-name new-name" data-base="${dbName}" 
                                       data-table="${tableName}">${tableName}</p></td>` +
                              `<td><p class="table-name table-settings" data-base="${dbName}" 
-                                             data-table="${tableName}"><i class="far fa-list-alt"></i> Browse</p></td>` +
+                                             data-table="${tableName}"><img src="assets/img/b_browse.png"> Browse</p></td>` +
                              `<td><p class="open-table-structure table-settings" data-base="${dbName}" 
-                                             data-table="${tableName}"><i class="fas fa-th-list"></i> Structure</p></td>`;
+                                             data-table="${tableName}"><img src="assets/img/b_props.png"> Structure</p></td>`;
                              if (dbName !== 'information_schema' && dbName !== 'performance_schema') {
                                  browse += `<td><p class="open-table-insert table-settings" data-base="${dbName}" 
-                                             data-table="${tableName}"><i class="fas fa-file-upload"></i> Insert</p></td>` +
+                                             data-table="${tableName}"><img src="assets/img/b_insrow.png"> Insert</p></td>` +
                                  `<td><p class="empty-tbl-submit table-settings" data-table="${tableName}">
-                                          <i class="fas fa-folder-open"></i> Empty</p></td>` +
+                                          <img src="assets/img/b_empty.png"> Empty</p></td>` +
                                  `<td><p class="delete-tbl-submit table-settings" data-table="${tableName}">
-                                          <i class="fas fa-minus-circle"></i> Drop</p></td></tr>`;
+                                          <img src="assets/img/b_drop.png"> Drop</p></td></tr>`;
                              }
 
                 $("#db-browse").append(browse);
@@ -772,7 +799,7 @@ $("section").on('click', '.table-name', function () {
                     setAttributes(tBody, {"class": "table-fields", "data-base": dbName, "data-table": tableName});
                     trDel.innerHTML = `<p class="del-field" data-base="${dbName}"` +
                         ` data-table="${tableName}" data-id="${val.id}">` +
-                        '<i class="fas fa-minus-circle"></i> Delete</p>';
+                        '<img src="assets/img/b_drop.png"> Delete</p>';
                     table.append(tBody);
                     if (dbName !== "information_schema" && dbName !== "performance_schema") {
                         tBody.append(trDel);
@@ -931,7 +958,7 @@ function addTable(tblList, tbl, db) {
         $(tblList).append(newTbl);
     }
     var li   = document.createElement('LI');
-    var icon = '<i class="far fa-list-alt"></i>';
+    var icon = '<img src="assets/img/b_props.png">';
     setAttributes(li, {"class": "table-name new-name", "data-table": tbl, "data-base": db});
     li.innerHTML = "‐‐‐" + icon + " " + `<span>${tbl}</span>`;
     tblList.append(li);
@@ -996,7 +1023,7 @@ function openModal(data, id) {
 
 function newTable() {
     var newTable       = document.createElement("LI");
-    var newIcon        = '<i class="far fa-list-alt"></i>';
+    var newIcon        = '<img src="assets/img/b_table_add.png">';
     newTable.innerHTML = "‐‐‐" + newIcon + " " + "New";
     setAttributes(newTable, {"class": "new-table"});
     return newTable;
